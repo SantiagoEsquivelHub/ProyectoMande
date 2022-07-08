@@ -5,9 +5,7 @@ import ReactDOM from 'react-dom/client'
 const App = () => {
 
   return (
-
     <h1>MANDE APP</h1>
-
   )
 }
 
