@@ -8,8 +8,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "@ant-design/icons": "^4.7.0",
+    "antd": "^4.21.7",
+    "axios": "^0.27.2",
+    "bootstrap": "^5.2.0-beta1",
+    "prop-types": "^15.8.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.0.0",
+    "react-leaflet": "^4.0.1",
+    "react-router-dom": "^6.3.0",
+    "sass": "^1.5.1"
   },
   "devDependencies": {
     "@types/react": "^18.0.0",

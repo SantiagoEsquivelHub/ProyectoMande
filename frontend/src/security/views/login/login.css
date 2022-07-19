@@ -1,0 +1,40 @@
+.background {
+  background-image: url("../../../assets/images/background_login.svg");
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.gradient {
+  background-color: linear-gradient(174.54deg, #44D2FF  22.68%, white 99.09%)!important;
+}
+
+.btn-primary {
+  background: #18BCF0 !important;
+  border: none !important;
+}
+
+.btn-primary:hover {
+  background: #44D2FF !important;
+  border: none !important;
+}
+
+.forms_register {
+  text-decoration: none !important;
+  font-size: 14px;
+}
+
+.crearCliente .ant-form-item-label,
+.crearTrabajador .ant-form-item-label {
+  text-align: left !important;
+}
+
+.crearCliente .ant-form-item,
+.crearTrabajador .ant-form-item {
+  margin-bottom: 50px !important;
+}
