@@ -1,0 +1,22 @@
+body, html {
+    /* background: linear-gradient(174.54deg, #FDC43F 22.68%, rgba(178, 145, 104, 0.713644) 99.09%)!important; */
+    background-repeat: no-repeat;
+    height: 100%;
+}
+
+.error404{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    /* min-height: 100%; */
+}
+
+.font {
+    font-family: cursive;
+}
+
+.error404 h2, 
+.error404 h4{
+    font-weight: 100;
+}

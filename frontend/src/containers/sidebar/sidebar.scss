@@ -1,0 +1,87 @@
+.sidebar {
+    width: 60px;
+    height: 100vh;
+    background: linear-gradient(174.54deg, #05F3C8 22.68%, #18BCF0 99.09%)!important;
+    transition-duration: 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content:center;
+    position: absolute;
+    z-index: 2;
+
+    .hamburger {
+        width: 25px;
+        margin-top: 20px;
+        cursor: pointer;
+    }
+
+    .linksContainer {
+        display: flex;
+        flex-direction: column;
+        margin-top: 80px;
+    }
+}
+
+.sidebarOpen {
+    width: 200px;
+    height: 100vh;
+    background: linear-gradient(174.54deg, #05F3C8 22.68%, #18BCF0 99.09%)!important;
+    transition-duration: 0.3s;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: absolute;
+    z-index: 2;
+
+    .linksContainer {
+        display: flex;
+        flex-direction: column;
+        margin-top: 80px;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    .hamburger {
+        width: 25px;
+        margin-top: 20px;
+        cursor: pointer;
+        margin-left: 17.5px;
+    }
+}
+
+.centrarOpen{
+    display: flex;
+    justify-content: center;
+
+    .hamburger {
+        width: 25px;
+        margin-top: 0;
+        cursor: pointer;
+        margin-left: 0;
+    }
+
+}
+
+.salida{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0!important;
+    padding: 0!important;
+
+
+    li{
+        list-style: none;
+    }
+
+    a{
+        cursor: pointer;
+    }
+}
+
+.cargando{
+    display: none;
+}
