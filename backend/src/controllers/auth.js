@@ -5,9 +5,10 @@ const TOKEN_KEY = "x4TvnErxRETbVcqaLl5dqMI115eNlp5y";
 
 const login = async (req, res = response) => {
     //console.log(req.body)
-    const usuario = req.body.usuario;
-    
-    const validateUserExist = await validateUser(usuario);
+    const email = req.body.usuario;
+    const clave = req.body.clave;
+
+    const validateUserExist = await validateUser(email , clave);
     console.log(validateUserExist)
     if(validateUserExist){
         /* Creamos el token unico */

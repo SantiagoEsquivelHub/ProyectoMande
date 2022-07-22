@@ -1,19 +1,26 @@
 const pool = require("../database/db_pool_connect");
 
-const validateUser = async ( usuario ) => {
+const validateUser = async ( email , clave) => {
 
-    const user = await pool.query("SELECT correo_usuario , documento_usuario , id_usuario FROM usuario WHERE correo_usuario = $1;", [usuario]);
-  
-    if(user.rows == ''){
-        return false;
-    }else{
-        if(usuario != user.rows[0].correo_usuario ){
+    const cliente = await pool.query(`SELECT email_cliente as email, nombre_cliente as nombre, id_cliente as id  FROM cliente WHERE email_cliente = '${email}' AND contraseña_cliente = '${clave}';`);
+    if(cliente.rows == ''){
+        const trabajador = await pool.query(`SELECT nombre_trabajador as nombre,  email_trabajador as email, id_trabajador as id  FROM trabajador WHERE email_trabajador = '${email}' AND contraseña_trabajador = '${clave}';`);
+        if(trabajador.rows != ''){
+            if(email != trabajador.rows[0].email ){
+                return false;
+            } else{
+                return {"rol": "trabajador", ...trabajador.rows[0]};
+            }
+        }else{
             return false;
-            
-        } else{
-            return user.rows[0];
         }
-    
+
+    }else{
+        if(email != cliente.rows[0].email ){
+            return false;
+        } else{
+            return {"rol": "cliente", ...cliente.rows[0]};
+        }
     }
 };
 
