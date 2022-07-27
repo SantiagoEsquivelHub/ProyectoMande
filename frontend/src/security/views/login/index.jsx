@@ -15,6 +15,7 @@ import {
 } from 'antd';
 import MapView from "../map";
 import './login.css';
+import { headers } from "../../../containers/headers/headers";
 
 
 const { Option } = Select;
@@ -36,6 +37,8 @@ const LoginView = ({ setToken }) => {
     };
 
     const [loading, setLoading] = useState(false);
+    const [loadingClient, setLoadingClient] = useState(false);
+    const [loadingWorker, setLoadingWorker] = useState(false);
     const [formClient] = Form.useForm();
     const [formWorker] = Form.useForm();
     const [visibleWorkerModal, setVisibleWorkerModal] = useState(false);
@@ -47,11 +50,27 @@ const LoginView = ({ setToken }) => {
     });
 
     const [datosCliente, setDatosCliente] = useState({
-        url_recibo: "",
-        email: "",
-        numero_celular: "",
-        direccion_residencia: ""
+        url_recibo_publico: "",
+        email_cliente: "",
+        numero_celular_cliente: "",
+        direccion_residencia_cliente: "",
+        nombre_cliente: "",
+        contraseña_cliente: "",
+        rol_cliente: "Cliente"
     });
+
+    const [datosTrabajador, setDatosTrabajador] = useState({
+        url_foto_perfil: "",
+        url_documento: "",
+        email_trabajador: "",
+        numero_celular_trabajador: "",
+        direccion_residencia_trabajador: "",
+        nombre_trabajador: "",
+        contraseña_trabajador: "",
+        id_estado: "",
+        rol_trabajador: "Trabajador"
+    });
+
 
     const handleInputChange = (e) => {
         let { name, value } = e.target;
@@ -64,18 +83,21 @@ const LoginView = ({ setToken }) => {
 
 
         try {
-            let res = await axios.post("http://localhost:3001/usuario/login", datos);
+            let res = await axios.post("http://localhost:4001/api/auth/login", datos);
             setUser(!user);
             setTimeout(() => {
                 const accessToken = res.data.token;
-                console.log(res.data);
                 setToken(accessToken);
                 localStorage.setItem("token", accessToken);
                 setDatos({
                     usuario: "",
                     clave: ""
                 })
-            }, 5000);
+                localStorage.setItem('usuario', res.data.nombre)
+                localStorage.setItem('img', res.data.url_img_usuario)
+                localStorage.setItem('rol', res.data.rol)
+                localStorage.setItem('id', res.data.id)
+            }, 2000);
         } catch (error) {
             if (error.response) {
                 console.log(error.response.data);
@@ -120,26 +142,64 @@ const LoginView = ({ setToken }) => {
         formWorker.resetFields();
     };
 
-    const handleSubmitClient = () => {
+    const handleSubmitClient = async () => {
 
-        let position = localStorage.getItem('position')
-        console.log(position)
+        const requestOptions = {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify({
+                ...datosCliente
+            })
+        }
 
-        setDatosCliente({
-            ...datosCliente,
-            ['direccion_residencia']: position
-        })
+        const resp = await fetch(`http://${document.domain}:4001/api/client/create`, requestOptions)
 
-        console.log(datosCliente);
+        openNotificationWithIconSuccess('success');
+        setLoadingClient(true);
 
+        setTimeout(() => {
+            setLoadingClient(false);
+            setVisibleClientModal(false);
+            onResetClient();
+            window.location.reload();
+        }, 2000);
 
     }
 
-    const handleSubmitWorker = () => {
+    const handleSubmitWorker = async () => {
+
+        const requestOptions = {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify({
+                ...datosTrabajador,
+                id_estado: '1'
+            })
+        }
+console.log(JSON.stringify({
+    ...datosTrabajador,
+    id_estado: '1'
+}))
+        const resp = await fetch(`http://${document.domain}:4001/api/worker/create`, requestOptions)
+        console.log(resp)
+        if (resp.status == 200) {
+            openNotificationWithIconSuccess('success');
+            setLoadingWorker(true);
+
+            setTimeout(() => {
+                setLoadingWorker(false);
+                setVisibleWorkerModal(false);
+                onResetWorker();
+                window.location.reload();
+            }, 2000);
+        }else{
+
+        }
+       
 
     }
 
-    const handleInputChangeRegister = (e) => {
+    const handleInputChangeRegisterWorker = (e) => {
 
         setDatosCliente({
             ...datosCliente,
@@ -148,15 +208,24 @@ const LoginView = ({ setToken }) => {
 
     }
 
-    const handleSelectChange = (value) => {
+    const handleInputChangeRegisterEmployee = (e) => {
 
-        setDatos({
-            ...datos,
-            estado_usuario: '1',
-            rol_usuario: `${value}`
+        setDatosTrabajador({
+            ...datosTrabajador,
+            [e.target.name]: e.target.value
         })
 
-    };
+    }
+
+    /*  const handleSelectChange = (value) => {
+ 
+         setDatos({
+             ...datos,
+             estado_usuario: '1',
+             rol_usuario: `${value}`
+         })
+ 
+     }; */
 
     const props = {
         name: 'file',
@@ -166,7 +235,7 @@ const LoginView = ({ setToken }) => {
     }
 
     const getUrl = async () => {
-        const fileInput = document.getElementById('url_recibo');
+        const fileInput = document.getElementById('url_recibo_publico');
         const selectedFile = fileInput.files[0];
 
         const btn = document.getElementsByClassName('btnCrearCliente');
@@ -191,6 +260,32 @@ const LoginView = ({ setToken }) => {
         }
     }
 
+    const getUrlImg = async (nameInput) => {
+        const fileInput = document.getElementById(nameInput);
+        const selectedFile = fileInput.files[0];
+
+        const btn = document.getElementsByClassName('btnCrearTrabajador');
+
+        if (nameInput == 'url_foto_perfil' ? selectedFile.type != "image/png" && selectedFile.type != "image/jpeg" && selectedFile.type != "image/jpg" : selectedFile.type != "application/pdf") {
+            //console.log('LLEGO');
+            nameInput == 'url_foto_perfil' ? alert("Solo se permiten imágenes en PNG, JPG y JPEG") : alert("Solo se permiten imágenes en PDF")
+            fileInput.value = "";
+            //console.log(btn[0])
+            btn[0].setAttribute('disabled', 'true');
+        } else {
+            btn[0].removeAttribute('disabled');
+
+
+            let result = await getBase64(selectedFile);
+            let url = result;
+
+            setDatosTrabajador({
+                ...datosTrabajador,
+                [fileInput.id]: url
+            })
+        }
+    }
+
     const getBase64 = (file) =>
         new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -200,6 +295,16 @@ const LoginView = ({ setToken }) => {
 
             reader.onerror = (error) => reject(error);
         });
+
+
+    /*Función que muestra una notificación cuando se ha logrado crear un usuario*/
+    const openNotificationWithIconSuccess = (type) => {
+        notification[type]({
+            message: '¡Usuario creado correctamente!',
+            description:
+                'Los datos ingresados son correctos :)',
+        });
+    };
 
 
     return (
@@ -271,34 +376,40 @@ const LoginView = ({ setToken }) => {
 
                     <Row className='d-flex align-items-center justify-content-center foto_perfil'>
                         <Form.Item
-                            name="url_img_usuario"
+                            name="url_recibo_publico"
                             label=""
                             valuePropName="fileList"
                             getValueFromEvent={normFile}
                             onChange={getUrl}
                             rules={[{ required: true, message: "Este campo es obligatorio" }]}
                         >
-                            <Upload name="url_recibo" listType="picture" {...props} maxCount={1} id="url_recibo" accept="application/pdf">
+                            <Upload name="url_recibo_publico" listType="picture" {...props} maxCount={1} id="url_recibo_publico" accept="application/pdf">
                                 <Button icon={<UploadOutlined />}>Recibo de servicio público</Button>
                             </Upload>
                         </Form.Item>
                     </Row>
 
                     <Row className='col-12 d-flex flex-column align-items-center'>
-                        <MapView />
+                        <MapView setDatosCliente={setDatosCliente} datosCliente={datosCliente} />
                     </Row>
 
                     <Row className='col-12 d-flex flex-column align-items-center'>
                         <div className='d-flex justify-content-center'>
                             <Col span={12} className="m-3">
-                                <Form.Item name="email" label="Correo electrónico" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
-                                    <Input type="text" onChange={handleInputChangeRegister} name="email" />
+                                <Form.Item name="nombre_cliente" label="Nombre completo" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
+                                    <Input type="text" pattern="^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$" title="Ingresa un nombre válido" onChange={handleInputChangeRegisterWorker} name="nombre_cliente" />
+                                </Form.Item>
+                                <Form.Item name="email_cliente" label="Correo electrónico" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
+                                    <Input type="email" pattern="^[^@]+@[^@]+\.[a-zA-Z]{2,}$" title="Ingresa un correo válido" onChange={handleInputChangeRegisterWorker} name="email_cliente" />
                                 </Form.Item>
 
                             </Col>
                             <Col span={12} className="m-3">
-                                <Form.Item name="numero_celular" label="Número de celular" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
-                                    <Input type="text" onChange={handleInputChangeRegister} name="numero_celular" />
+                                <Form.Item name="contraseña_cliente" label="Contraseña" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
+                                    <Input type="password" pattern="^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$" title="La contraseña debe tener al entre 8 y 16 caracteres, al menos un dígito, al menos una minúscula, al menos una mayúscula y al menos un caracter no alfanumérico." onChange={handleInputChangeRegisterWorker} name="contraseña_cliente" />
+                                </Form.Item>
+                                <Form.Item name="numero_celular_cliente" label="Número de celular" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
+                                    <Input type="text" pattern="([0-9]{10})" title="Ingresa un número de celular válido" onChange={handleInputChangeRegisterWorker} name="numero_celular_cliente" />
                                 </Form.Item>
 
                             </Col>
@@ -309,7 +420,7 @@ const LoginView = ({ setToken }) => {
                             <Button htmlType="button" onClick={onResetClient}>
                                 Reset
                             </Button>
-                            <Button type="primary" htmlType="submit" loading={loading} className="btnCrearCliente">
+                            <Button type="primary" htmlType="submit" loading={loadingClient} className="btnCrearCliente">
                                 Crear
                             </Button>
                         </Form.Item>
@@ -327,51 +438,57 @@ const LoginView = ({ setToken }) => {
                 ]}
             >
 
-                <Form {...layout} form={formClient} name="crearTrabajador" className="crearTrabajador" id="crearTrabajador" onFinish={handleSubmitWorker}>
+                <Form {...layout} form={formWorker} name="crearTrabajador" className="crearTrabajador" id="crearTrabajador" onFinish={handleSubmitWorker}>
                     <Row className='d-flex align-items-center justify-content-center foto_perfil'>
                         <Form.Item
-                            name="url_img_usuario"
+                            name="url_foto_perfil"
                             label=""
                             valuePropName="fileList"
                             getValueFromEvent={normFile}
-                            onChange={getUrl}
+                            onChange={() => getUrlImg('url_foto_perfil')}
                             rules={[{ required: true, message: "Este campo es obligatorio" }]}
                         >
-                            <Upload name="url_recibo" listType="picture" {...props} maxCount={1} id="url_recibo" accept="application/pdf">
+                            <Upload name="url_foto_perfil" listType="picture" {...props} maxCount={1} id="url_foto_perfil">
                                 <Button icon={<UploadOutlined />}>Foto de perfil</Button>
                             </Upload>
                         </Form.Item>
                     </Row>
                     <Row className='d-flex align-items-center justify-content-center foto_perfil'>
                         <Form.Item
-                            name="url_img_usuario"
+                            name="url_documento"
                             label=""
                             valuePropName="fileList"
                             getValueFromEvent={normFile}
-                            onChange={getUrl}
+                            onChange={() => getUrlImg('url_documento')}
                             rules={[{ required: true, message: "Este campo es obligatorio" }]}
                         >
-                            <Upload name="url_recibo" listType="picture" {...props} maxCount={1} id="url_recibo" accept="application/pdf">
+                            <Upload name="url_documento" listType="picture" {...props} maxCount={1} id="url_documento" accept="application/pdf">
                                 <Button icon={<UploadOutlined />}>Documento de identidad</Button>
                             </Upload>
                         </Form.Item>
                     </Row>
 
                     <Row className='col-12 d-flex flex-column align-items-center'>
-                        <MapView />
+                        <MapView setDatosTrabajador={setDatosTrabajador} datosTrabajador={datosTrabajador} />
                     </Row>
 
                     <Row className='col-12 d-flex flex-column align-items-center'>
                         <div className='d-flex justify-content-center'>
                             <Col span={12} className="m-3">
-                                <Form.Item name="email" label="Correo electrónico" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
-                                    <Input type="text" onChange={handleInputChangeRegister} name="email" />
+                                <Form.Item name="nombre_trabajador" label="Nombre completo" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
+                                    <Input type="text" pattern="^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$" title="Ingresa un nombre válido" onChange={handleInputChangeRegisterEmployee} name="nombre_trabajador" />
+                                </Form.Item>
+                                <Form.Item name="email_trabajador" label="Correo electrónico" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
+                                    <Input type="mail" pattern="^[^@]+@[^@]+\.[a-zA-Z]{2,}$" title="Ingresa un correo válido" onChange={handleInputChangeRegisterEmployee} name="email_trabajador" />
                                 </Form.Item>
 
                             </Col>
                             <Col span={12} className="m-3">
-                                <Form.Item name="numero_celular" label="Número de celular" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
-                                    <Input type="text" onChange={handleInputChangeRegister} name="numero_celular" />
+                                <Form.Item name="contraseña_trabajador" label="Contraseña" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
+                                    <Input type="password" pattern="^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$" title="La contraseña debe tener al entre 8 y 16 caracteres, al menos un dígito, al menos una minúscula, al menos una mayúscula y al menos un caracter no alfanumérico." onChange={handleInputChangeRegisterEmployee} name="contraseña_trabajador" />
+                                </Form.Item>
+                                <Form.Item name="numero_celular_trabajador" label="Número de celular" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
+                                    <Input type="text" pattern="([0-9]{10})" title="Ingresa un número de celular válido" onChange={handleInputChangeRegisterEmployee} name="numero_celular_trabajador" />
                                 </Form.Item>
 
                             </Col>
@@ -382,7 +499,7 @@ const LoginView = ({ setToken }) => {
                             <Button htmlType="button" onClick={onResetWorker}>
                                 Reset
                             </Button>
-                            <Button type="primary" htmlType="submit" loading={loading} className="btnCrearTrabajador">
+                            <Button type="primary" htmlType="submit" loading={loadingWorker} className="btnCrearTrabajador">
                                 Crear
                             </Button>
                         </Form.Item>

@@ -21,6 +21,10 @@
         flex-direction: column;
         margin-top: 80px;
     }
+
+    .name{
+        display: none!important;
+    }
 }
 
 .sidebarOpen {
@@ -50,6 +54,15 @@
         cursor: pointer;
         margin-left: 17.5px;
     }
+
+    .name p{
+        color: white!important;
+        font-weight: bold;
+        background-color: #18BCF0;
+        padding: 1% 7%;
+        border-radius: 20px;
+        margin: 0!important;
+    }
 }
 
 .centrarOpen{
@@ -57,7 +70,7 @@
     justify-content: center;
 
     .hamburger {
-        width: 25px;
+        width: 70px;
         margin-top: 0;
         cursor: pointer;
         margin-left: 0;
@@ -85,3 +98,13 @@
 .cargando{
     display: none;
 }
+
+
+
+
+
+
+
+
+
+

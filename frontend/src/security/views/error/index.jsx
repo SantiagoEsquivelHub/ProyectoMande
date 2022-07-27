@@ -9,8 +9,6 @@ const ErrorView = () => {
             <h4>Atentamente, </h4>
             <h5>Engineers</h5>
         </div>
-
-
     )
 }
 

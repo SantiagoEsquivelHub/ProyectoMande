@@ -1,44 +1,68 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Links } from '../sidebar/Data/index'
 import Item from "./Item";
 import './sidebar.scss';
 import userPhoto from '../../assets/images/UserPhoto.png'
 import { useNavigate } from "react-router-dom";
-const Sidebar = ({setToken}) => {
 
+const Sidebar = ({ setToken }) => {
+
+    /*Estados generales*/
     const [open, setOpen] = useState(false);
     const [logout, setLogout] = useState(false);
+    const [dataUser, setDataUser] = useState(false);
 
+    /*Método imperactivo para cambiar de localización en el software*/
     let navegate = useNavigate();
+
+    /*Función para salir del software e ir al login*/
     const handleLogout = () => {
         setLogout(!logout);
         localStorage.removeItem('token');
         setTimeout(() => {
             setToken();
-           navegate("/");
-           setLogout(false);
-        }, 5000);
-        
+            navegate("/");
+            setLogout(false);
+        }, 2000);
 
     }
+
+    /*Función para tener los datos del usuario que acaba de entrar al software*/
+    const getData = () => {
+
+        let usuario = localStorage.getItem('usuario');
+        let img = localStorage.getItem('img');
+        let rol = localStorage.getItem('rol');
+        let id = localStorage.getItem('id');
+
+        setDataUser({
+            usuario: usuario,
+            img: img,
+            rol: rol,
+            id: id
+        })
+
+    }
+
+    /*Funciones que se ejecutarán cuando se renderice la página*/
+    useEffect(() => {
+
+        getData();
+
+    }, [])
+
     return (
         <>
             <div className={open ? "sidebarOpen" : "sidebar"}>
-                {/*            <svg
-                className="hamburger"
-                onClick={() => setOpen(!open)}
-                viewBox="0 0 18 12"
-            >
-                <path
-                    d="M0 12H18V10H0V12ZM0 7H18V5H0V7ZM0 0V2H18V0H0Z"
-                    fill="#8F8F8F"
-                />
-            </svg> */}
-                <div className={open ? "centrarOpen" : ""}>
-                    <img src={userPhoto}
+            <div className={open ? "centrarOpen" : ""}>
+                    <img src={dataUser.img == 'undefined' ? userPhoto : dataUser.img}
                         alt=""
                         className="hamburger"
                         onClick={() => setOpen(!open)} />
+                </div>
+
+                <div className="d-flex justify-content-center align-items-center p-3 name">
+                    <p>{!dataUser ? '' : dataUser.usuario}</p>
                 </div>
 
                 <ul className="salida">

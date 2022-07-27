@@ -12,13 +12,9 @@ const App = () => {
 }
 
   return (
-
-  
       <Routes>
         <Route path='/*' element={<MainRouter location={location}/>} />
       </Routes>
-   /*  */
-
   )
 }
 
