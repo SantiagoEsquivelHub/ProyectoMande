@@ -494,6 +494,30 @@ console.log(JSON.stringify({
                             </Col>
                         </div>
                     </Row>
+
+                    <Row className='col-12 d-flex flex-column align-items-center'>
+                        <div className='d-flex justify-content-center'>
+                            <Col span={12} className="m-3">
+                                <Form.Item name="precio_hora_labor_plomero" label="Plomero" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
+                                    <Input type="text" pattern="([0-9]{5,6})" title="Ingresa un valor monetario válido de 5 a 6 cifras" onChange={handleInputChangeRegisterEmployee} name="precio_hora_labor_plomero" />
+                                </Form.Item>
+                                <Form.Item name="precio_hora_labor_cerrajero" label="Cerrajero" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
+                                    <Input type="text" pattern="([0-9]{5,6})" title="Ingresa un valor monetario válido de 5 a 6 cifras" onChange={handleInputChangeRegisterEmployee} name="precio_hora_labor_cerrajero" />
+                                </Form.Item>
+
+                            </Col>
+                            <Col span={12} className="m-3">
+                                <Form.Item name="precio_hora_labor_profesor" label="Profesor de inglés" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
+                                    <Input type="text" pattern="([0-9]{5,6})" title="Ingresa un valor monetario válido de 5 a 6 cifras" onChange={handleInputChangeRegisterEmployee} name="precio_hora_labor_profesor" />
+                                </Form.Item>
+                                <Form.Item name="precio_hora_labor_paseador" label="Paseador de perros" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
+                                    <Input type="text" pattern="([0-9]{5,6})" title="Ingresa un valor monetario válido de 5 a 6 cifras" onChange={handleInputChangeRegisterEmployee} name="precio_hora_labor_paseador" />
+                                </Form.Item>
+
+                            </Col>
+                        </div>
+                    </Row>
+
                     <div className='d-flex justify-content-center'>
                         <Form.Item >
                             <Button htmlType="button" onClick={onResetWorker}>
