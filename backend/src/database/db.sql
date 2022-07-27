@@ -35,7 +35,7 @@ CREATE TABLE cliente(
     email_cliente VARCHAR NULL,
     contraseña_cliente VARCHAR,
     url_recibo_publico VARCHAR NULL,
-    rol_cliente rol_type,
+    rol_cliente rol_type NULL,
     PRIMARY KEY (id_cliente)
 );
 
