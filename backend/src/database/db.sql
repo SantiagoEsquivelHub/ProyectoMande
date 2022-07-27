@@ -4,6 +4,8 @@ CREATE TYPE GeoCoord AS
 (Latitude DECIMAL,
  Longitude DECIMAL);
 
+CREATE TYPE rol_type AS ENUM ('Cliente', 'Trabajador');
+
 /* CLIENTE */
 /*Creamos la tabla Tipo de Tarjeta */
 CREATE TABLE tipo(
@@ -33,6 +35,7 @@ CREATE TABLE cliente(
     email_cliente VARCHAR NULL,
     contraseña_cliente VARCHAR,
     url_recibo_publico VARCHAR NULL,
+    rol_cliente rol_type,
     PRIMARY KEY (id_cliente)
 );
 
@@ -68,6 +71,7 @@ CREATE TABLE trabajador(
     url_foto_perfil VARCHAR NULL,
     url_documento VARCHAR NULL,
     id_estado INT NULL,
+    rol_trabajador rol_type,
     PRIMARY KEY (id_trabajador),
     FOREIGN KEY (id_estado) REFERENCES estado_trabajador(id_estado)
 );
