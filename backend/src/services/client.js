@@ -6,6 +6,7 @@ const insertClient = async (data) => {
     const { email_cliente, nombre_cliente , numero_celular_cliente, url_recibo_publico, rol_cliente, direccion_residencia_cliente} = data;
     const passwordHash = await bcrypt.hash(password, 8);
 
+    //let numero_celular_cliente = parseInt(numero_celular_cliente);
     const cliente = await pool.query(`SELECT * FROM cliente WHERE email_cliente = '${email_cliente}';`);
 
     if (cliente.rows == '') {

@@ -123,4 +123,6 @@ CREATE TABLE contratacion(
 /* FIN CONTRATACIÓN */
 
 
-
+INSERT INTO estado_trabajador(nombre_estado)
+VALUES('Disponible'),
+('Ocupado')
