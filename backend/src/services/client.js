@@ -5,7 +5,7 @@ const insertClient = async (data) => {
     const { email, name, password } = data;
     const passwordHash = await bcrypt.hash(password, 8);
 
-    const cliente = await pool.query(`SELECT * FROM cliente WHERE email_cliente = '${email}' AND contraseña_cliente = '${passwordHash}';`);
+    const cliente = await pool.query(`SELECT * FROM cliente WHERE email_cliente = '${email}';`);
 
     if (cliente.rows == '') {
         const createClientQuery = await pool.query(`INSERT INTO cliente(email_cliente ,nombre_cliente, contraseña_cliente) VALUES('${email}' , '${name}' , '${passwordHash}');`);
