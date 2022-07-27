@@ -3,9 +3,17 @@ const auth = require('./routes/auth')
 const client = require('./routes/client')
 const worker = require('./routes/worker')
 const cors = require("cors");
+
+const app = express();
+const PORT = process.env.PORT || 4001;
+
 let bodyParser = require('body-parser');
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+app.use(express.json());
+
+
+
 app.use(express.json());
 
 app.use(cors());
