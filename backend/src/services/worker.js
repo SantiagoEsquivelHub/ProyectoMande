@@ -20,8 +20,27 @@ const insertWorker = async (data) => {
 
 };
 
+const insertWorkforce = async (data) => {
+    const { precio_hora_labor_uno, precio_hora_labor_dos, precio_hora_labor_tres, precio_hora_labor_cuatro, id_trabajador } = data;
+
+    const verificarLabores = await pool.query(`SELECT * FROM labor_trabajador WHERE id_trabajador = '${id_trabajador}';`);
+
+    if (verificarLabores.rows == '') {
+        const createWorkforceQuery = await pool.query(`INSERT INTO labor_trabajador(precio_hora_labor , id_trabajador ,id_labor) VALUES (${precio_hora_labor_uno} , ${id_trabajador} , 1) , (${precio_hora_labor_dos} , ${id_trabajador} , 2) , (${precio_hora_labor_tres} , ${id_trabajador} , 3) , (${precio_hora_labor_cuatro} , ${id_trabajador} , 4);`);
+
+        if (createWorkforceQuery != '') {
+            return true;
+        }
+    } else {
+        return false;
+    }
+
+};
+
+
 
 
 module.exports = {
-    insertWorker
+    insertWorker,
+    insertWorkforce
 };

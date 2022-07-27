@@ -1,5 +1,5 @@
 const { response } = require('express');
-const { insertWorker } = require( '../services/worker')
+const { insertWorker, insertWorkforce } = require( '../services/worker')
 
 
 const create = async (req, res = response) => {
@@ -14,9 +14,22 @@ const create = async (req, res = response) => {
     
 };
 
+const createWorkforce = async (req, res = response) => {
+
+    const insert = await insertWorkforce(req.body);
+
+    if(insert){
+        res.status(200).send("Labores creadas con exito");
+    }else{
+        res.status(400).send("El trabajador ya tiene labores creadas");
+    }
+    
+};
+
 
 
 
 module.exports = {
-    create
+    create,
+    createWorkforce
 }
