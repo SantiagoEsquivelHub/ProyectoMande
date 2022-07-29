@@ -115,6 +115,7 @@ const LoginView = ({ setToken }) => {
                 localStorage.setItem('img', res.data.url_img_usuario)
                 localStorage.setItem('rol', res.data.rol)
                 localStorage.setItem('id', res.data.id)
+                localStorage.setItem('direccion', res.data.direccion)
             }, 2000);
         } catch (error) {
             if (error.response) {

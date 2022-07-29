@@ -1,39 +1,143 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { Rate } from 'antd';
+import './style.css';
+import {
+    Modal
+} from 'antd';
+import { headers } from '../../../containers/headers/headers';
+import MapWorkerView from './map';
 
- const CardEmployee = ({nombre, telefono, estado, url, id, calificacion, precio_hora }) => {
+
+const CardEmployee = ({ nombre, telefono, estado, url, id, calificacion, precio_hora, distancia }) => {
+
+    /*Estados generales*/
+    const [workerInfo, setWorkerInfo] = useState(false);
+    const [visibleWatchWorker, setVisibleWatchWorker] = useState(false)
+    let direccion_cliente = localStorage.getItem('direccion')
+
+    /*Función para obtener la data de cada usuario*/
+    const getWorkers = async (idWorker) => {
+
+        const requestOptions = {
+            method: 'GET',
+            headers: headers,
+        }
+
+        const ruta = `http://${document.domain}:4001/api/worker/info/` + idWorker;
+        console.log(ruta);
+        const res = await fetch(ruta, requestOptions);
+        const data = await res.json();
+        console.log(data[0]);
+        setWorkerInfo(data[0]);
+    }
+
+    /*Función que muestra un modal con la información del trabajador*/
+    const openWorker = (e) => {
+
+        let idWorker = e.target.id;
+        console.log(idWorker);
+        getWorkers(idWorker);
+
+        setVisibleWatchWorker(true)
+
+    }
+
+    /*Función quecierra un modal con la información del trabajador*/
+    const handleCancelWorker = () => {
+        setVisibleWatchWorker(false);
+    };
+
     return (
-        <div id={id} className="cardUser">
 
-            <li class="ant-list-item"><div class="ant-list-item-meta">
-                <div class="ant-list-item-meta-avatar">
-                    <span class="ant-avatar ant-avatar-circle ant-avatar-image">
+        <div id={id} className="cardEmployee">
+
+            <li className="ant-list-item"><div className="ant-list-item-meta">
+                <div className="ant-list-item-meta-avatar">
+                    <span className="ant-avatar ant-avatar-circle ant-avatar-image">
                         <img src={url} />
                     </span>
                 </div>
-                <div class="ant-list-item-meta-content">
-                    <h4 class="ant-list-item-meta-title" >
-                        <a /* onClick={openUser}  */id={id}>{nombre}</a>
+                <div className="ant-list-item-meta-content">
+                    <h4 className="ant-list-item-meta-title" >
+                        <a onClick={openWorker} id={id}>{nombre}</a>
                     </h4>
                 </div>
-                <div class="ant-list-item-meta-content">
-                    <div class="ant-list-item-meta-description correo">{telefono}</div>
+                <div className="ant-list-item-meta-content">
+                    <div className="ant-list-item-meta-description info">{telefono}</div>
                 </div>
-                <div class="ant-list-item-meta-content">
-                    <div class="ant-list-item-meta-description telefono">{calificacion}</div>
+                <div className="ant-list-item-meta-content">
+                    <div className="ant-list-item-meta-description info">Está a {Math.round(distancia)} km de tí</div>
                 </div>
-
+                <div className="ant-list-item-meta-content">
+                    {
+                        calificacion == "null" || calificacion == "0" ? <div className="ant-list-item-meta-description info">Sin calificaciones previas</div> : <Rate allowHalf disabled defaultValue={calificacion} />
+                    }
+                </div>
+                <div className="ant-list-item-meta-content">
+                    <div className={estado == 'Disponible' ? 'activo ' : 'deshabilitado'}>{estado == 'Disponible' ? estado : 'Ocupado'}</div>
+                </div>
+                <div className="ant-list-item-meta-content">
+                    <div className={estado == 'Disponible' ? 'contratar' : 'ocupado'}>{estado == 'Disponible' ? 'Contratar' : 'Ocupado'}</div>
+                </div>
             </div>
-                <div className={estado == 1 ? 'activo' : 'deshabilitado'}>{estado == 1 ? 'Activo' : 'Deshabilitado'}</div>
-                <ul class="ant-list-item-action">
-                    <li>
-                        <div >
 
-                            <svg className='editar' /* onClick={openEditUser}  */id={id} viewBox="64 64 896 896" focusable="false" data-icon="edit" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path id={id} d="M257.7 752c2 0 4-.2 6-.5L431.9 722c2-.4 3.9-1.3 5.3-2.8l423.9-423.9a9.96 9.96 0 000-14.1L694.9 114.9c-1.9-1.9-4.4-2.9-7.1-2.9s-5.2 1-7.1 2.9L256.8 538.8c-1.5 1.5-2.4 3.3-2.8 5.3l-29.5 168.2a33.5 33.5 0 009.4 29.8c6.6 6.4 14.9 9.9 23.8 9.9zm67.4-174.4L687.8 215l73.3 73.3-362.7 362.6-88.9 15.7 15.6-89zM880 836H144c-17.7 0-32 14.3-32 32v36c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-36c0-17.7-14.3-32-32-32z"></path></svg>
-
-                        </div>
-                    </li>
-                </ul>
             </li>
+
+
+            <Modal
+                style={{
+                    top: 20,
+                }}
+                visible={visibleWatchWorker}
+                title="Ver trabajador"
+                onCancel={handleCancelWorker}
+                width="800px"
+                footer={[
+
+                ]}
+            >
+
+
+
+
+                {
+                    !workerInfo ? 'Cargando...' :
+                        <>
+                            <div className='d-flex justify-content-center align-items-center imgUser m-2'>
+                                <img src={workerInfo.url_foto_perfil} />
+                            </div>
+                            <table className='tableUser table table-bordered'>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Campo</th>
+                                        <th scope="col">Información</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <tr>
+                                        <td>Nombre</td>
+                                        <td>{workerInfo.nombre_trabajador}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Correo</td>
+                                        <td>{workerInfo.email_trabajador}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Celular</td>
+                                        <td>{workerInfo.numero_celular_trabajador}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <MapWorkerView
+                                direccion_cliente={direccion_cliente}
+                                direccion_trabajador={workerInfo.direccion_residencia_trabajador}
+                                nombre_trabajador={workerInfo.nombre_trabajador} />
+                        </>
+                }
+
+            </Modal>
         </div>
     )
 }

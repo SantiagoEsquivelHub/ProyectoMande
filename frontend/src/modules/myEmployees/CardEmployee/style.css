@@ -1,0 +1,96 @@
+.cardEmployee {
+  border: 1px solid #44d2ff;
+  border-radius: 20px;
+  margin: 1% 0%;
+  background-color: #f6f6f6;
+}
+
+.cardEmployee .ant-list-item-meta-content h4 {
+  color: #44d2ff;
+}
+
+.cardEmployee .info {
+  font-weight: bold;
+}
+
+.cardEmployee .ant-rate {
+  color: #44d2ff !important;
+}
+
+.cardEmployee .ant-avatar {
+  width: 40px !important;
+  height: 40px !important;
+  line-height: 32px !important;
+  border-radius: 32% !important;
+  margin-left: 10px !important;
+}
+
+.cardEmployee .activo {
+  font-weight: bold;
+  background-color: lightgreen;
+  padding: 5px 5px;
+  border-radius: 10px;
+  width: 130px;
+  text-align: center;
+  color: black;
+  background-image: linear-gradient(
+    to left top,
+    #48bb78,
+    #41c18d,
+    #3ec7a2,
+    #43ccb4,
+    #4fd1c5
+  );
+  color: white;
+}
+
+.cardEmployee .deshabilitado {
+  font-weight: bold;
+  padding: 5px 5px;
+  border-radius: 10px;
+  width: 130px;
+  text-align: center;
+  color: white;
+  background-image: linear-gradient(
+    to left top,
+    #e53e3e,
+    #ec504f,
+    #f26160,
+    #f77170,
+    #fc8181
+  );
+}
+
+.cardEmployee .ant-list-item-meta {
+  align-items: center !important;
+}
+
+.imgUser img {
+  width: 300px;
+  height: 200px;
+}
+
+.cardEmployee .ocupado {
+  display: none;
+}
+
+.cardEmployee .contratar {
+  cursor: pointer;
+  font-weight: bold;
+  padding: 5px 5px;
+  border-radius: 10px;
+  width: 130px;
+  text-align: center;
+  background-image: linear-gradient(
+    to left top,
+    #05f3c8,
+    #59d0f5,
+    #07c1fa,
+    #44d2ff
+  );
+  color: white;
+}
+
+.direccion_trabajador img{
+  filter: hue-rotate(120deg) !important;
+}
