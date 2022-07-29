@@ -1,5 +1,5 @@
 const { response } = require('express');
-const { insertWorker, insertWorkforce, getlabors } = require( '../services/worker')
+const { insertWorker, insertWorkforce, getlabors, resulstOfSearch } = require( '../services/worker')
 
 
 const create = async (req, res = response) => {
@@ -36,11 +36,21 @@ const getAllLabors = async (req , res = response) => {
     }
 }
 
+const search = async (req, res = response) => {
+    const query = await resulstOfSearch(req.body) 
+    if(query){
+        res.json(query).status(200)
+    }else{
+        res.status(400).send("No hay resultados para tu busqueda")
+    }
+}
+
 
 
 
 module.exports = {
     create,
     createWorkforce,
-    getAllLabors
+    getAllLabors,
+    search
 }
