@@ -44,10 +44,23 @@ const insertWorkforce = async (data) => {
 
 };
 
+const getlabors = async () => {
+
+    const labores = await pool.query(`SELECT * FROM labor;`);
+
+    if (labores.rows != '') {
+        return labores.rows;
+    } else {
+        return false;
+    }
+
+};
+
 
 
 
 module.exports = {
     insertWorker,
-    insertWorkforce
+    insertWorkforce,
+    getlabors
 };
