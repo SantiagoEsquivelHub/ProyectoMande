@@ -1,20 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client'
-import { Routes, Route, BrowserRouter as Router, Navigate, useLocation } from 'react-router-dom'
+import { Routes, Route, BrowserRouter as Router, useLocation } from 'react-router-dom'
 import MainRouter from './containers/mainRouter/index'
 import 'antd/dist/antd.css';
 
 const App = () => {
 
   const location = useLocation();
-  if (location.pathname === '/*') {
-   
-}
-
+  
   return (
-      <Routes>
-        <Route path='/*' element={<MainRouter location={location}/>} />
-      </Routes>
+    /*Al ingresar al software nos movemos al componente MainRouter, en dónde tenemos las rutas principales*/
+    <Routes>
+      <Route path='/*' element={<MainRouter location={location} />} />
+    </Routes>
   )
 }
 

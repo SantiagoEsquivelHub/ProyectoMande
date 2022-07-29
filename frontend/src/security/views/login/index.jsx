@@ -14,8 +14,8 @@ import {
     notification
 } from 'antd';
 import MapView from "../map";
-import './login.css';
 import { headers } from "../../../containers/headers/headers";
+import './login.css';
 
 
 const { Option } = Select;
@@ -26,16 +26,12 @@ const layout = {
     wrapperCol: { span: 50 },
 };
 
+
+/*Componente usado para validar el ingreso de usuarios*/
+
 const LoginView = ({ setToken }) => {
 
-    const openNotificationWithIcon = (type) => {
-        notification[type]({
-            message: '¡Credenciales incorrectas!',
-            description:
-                'Los datos ingresados son incorrectos. Vefifícalos e inténtalo de nuevo :)',
-        });
-    };
-
+    /*Estados generales para recepción de datos del usuario*/
     const [loading, setLoading] = useState(false);
     const [loadingClient, setLoadingClient] = useState(false);
     const [loadingWorker, setLoadingWorker] = useState(false);
@@ -67,23 +63,45 @@ const LoginView = ({ setToken }) => {
         direccion_residencia_trabajador: "",
         nombre_trabajador: "",
         contraseña_trabajador: "",
-        id_estado: "",
-        rol_trabajador: "Trabajador"
+        rol_trabajador: "Trabajador",
+        precio_hora_labor_plomero: "",
+        precio_hora_labor_cerrajero: "",
+        precio_hora_labor_profesor: "",
+        precio_hora_labor_paseador: ""
     });
 
+    /*Función para mostrar notificación cuando los datos del usuario para el login son incorrectos*/
+    const openNotificationWithIcon = (type) => {
+        notification[type]({
+            message: '¡Credenciales incorrectas!',
+            description:
+                'Los datos ingresados son incorrectos. Vefifícalos e inténtalo de nuevo :)',
+        });
+    };
 
+    /*Función que muestra una notificación cuando se ha logrado crear un usuario*/
+    const openNotificationWithIconSuccess = (type) => {
+        notification[type]({
+            message: '¡Usuario creado correctamente!',
+            description:
+                'Los datos ingresados son correctos :)',
+        });
+    };
+
+    /*Función para actualizar los datos del usuario cada vez que hace cambios en los inputs del formulario del login*/
     const handleInputChange = (e) => {
         let { name, value } = e.target;
         let newDatos = { ...datos, [name]: value };
         setDatos(newDatos);
     }
 
+    /*Función para enviar los datos ingresados por el usuario para saber si puede ingresar o no*/
     const handleSubmit = async (e) => {
         e.preventDefault();
 
 
         try {
-            let res = await axios.post("http://localhost:4001/api/auth/login", datos);
+            let res = await axios.post(`http://${document.domain}:4001/api/auth/login`, datos);
             setUser(!user);
             setTimeout(() => {
                 const accessToken = res.data.token;
@@ -110,6 +128,14 @@ const LoginView = ({ setToken }) => {
         }
     };
 
+    /*Función y objetos del antd requeridos para el uso del componente Upload*/
+    const props = {
+        name: 'file',
+        headers: {
+            authorization: 'authorization-text',
+        },
+    }
+
     const normFile = (e) => {
         if (Array.isArray(e)) {
             return e.fileList;
@@ -118,30 +144,38 @@ const LoginView = ({ setToken }) => {
         return e.fileList;
     };
 
+
+    /*Función para mostrar modal con el formulario del cliente*/
     const showClientModal = () => {
         setVisibleClientModal(true);
     };
 
+    /*Función para mostrar modal con el formulario del trabajador*/
     const showWorkerModal = () => {
         setVisibleWorkerModal(true);
     };
 
+    /*Función para cerrar modal con el formulario del cliente*/
     const handleCancelClient = () => {
         setVisibleClientModal(false);
     };
 
+    /*Función para cerrar modal con el formulario del trabajador*/
     const handleCancelWorker = () => {
         setVisibleWorkerModal(false);
     };
 
+    /*Función para limpiar los campos del formulario del cliente*/
     const onResetClient = () => {
         formClient.resetFields();
     };
 
+    /*Función para limpiar los campos del formulario del trabajador*/
     const onResetWorker = () => {
         formWorker.resetFields();
     };
 
+    /*Función para crear clientes*/
     const handleSubmitClient = async () => {
 
         const requestOptions = {
@@ -166,6 +200,7 @@ const LoginView = ({ setToken }) => {
 
     }
 
+    /*Función para crear trabajadores*/
     const handleSubmitWorker = async () => {
 
         const requestOptions = {
@@ -176,13 +211,15 @@ const LoginView = ({ setToken }) => {
                 id_estado: '1'
             })
         }
-console.log(JSON.stringify({
-    ...datosTrabajador,
-    id_estado: '1'
-}))
-        const resp = await fetch(`http://${document.domain}:4001/api/worker/create`, requestOptions)
-        console.log(resp)
-        if (resp.status == 200) {
+        console.log(JSON.stringify({
+            ...datosTrabajador,
+            id_estado: '1'
+        }))
+        const respEmp = await fetch(`http://${document.domain}:4001/api/worker/create`, requestOptions)
+        console.log(respEmp)
+
+
+        if (respEmp.status == 200) {
             openNotificationWithIconSuccess('success');
             setLoadingWorker(true);
 
@@ -192,14 +229,15 @@ console.log(JSON.stringify({
                 onResetWorker();
                 window.location.reload();
             }, 2000);
-        }else{
+        } else {
 
         }
-       
+
 
     }
 
-    const handleInputChangeRegisterWorker = (e) => {
+    /*Función para actualizar los datos del cliente cada vez que hace cambios en los inputs de su formulario*/
+    const handleInputChangeRegisterClient = (e) => {
 
         setDatosCliente({
             ...datosCliente,
@@ -208,6 +246,7 @@ console.log(JSON.stringify({
 
     }
 
+    /*Función para actualizar los datos del trabajador cada vez que hace cambios en los inputs de su formulario*/
     const handleInputChangeRegisterEmployee = (e) => {
 
         setDatosTrabajador({
@@ -217,23 +256,7 @@ console.log(JSON.stringify({
 
     }
 
-    /*  const handleSelectChange = (value) => {
- 
-         setDatos({
-             ...datos,
-             estado_usuario: '1',
-             rol_usuario: `${value}`
-         })
- 
-     }; */
-
-    const props = {
-        name: 'file',
-        headers: {
-            authorization: 'authorization-text',
-        },
-    }
-
+    /*Función para convertir la URL del adjunto que suben al formulario de crear cliente en base64 y almacenarlo en el estado global*/
     const getUrl = async () => {
         const fileInput = document.getElementById('url_recibo_publico');
         const selectedFile = fileInput.files[0];
@@ -241,10 +264,10 @@ console.log(JSON.stringify({
         const btn = document.getElementsByClassName('btnCrearCliente');
 
         if (selectedFile.type != "application/pdf") {
-            //console.log('LLEGO');
+
             alert("Solo se permiten imágenes en PDF")
             fileInput.value = "";
-            //console.log(btn[0])
+
             btn[0].setAttribute('disabled', 'true');
         } else {
             btn[0].removeAttribute('disabled');
@@ -260,6 +283,7 @@ console.log(JSON.stringify({
         }
     }
 
+    /*Función para convertir la URL de los adjuntos que suben al formulario de crear trabajador en base64 y almacenarlo en el estado global*/
     const getUrlImg = async (nameInput) => {
         const fileInput = document.getElementById(nameInput);
         const selectedFile = fileInput.files[0];
@@ -267,10 +291,10 @@ console.log(JSON.stringify({
         const btn = document.getElementsByClassName('btnCrearTrabajador');
 
         if (nameInput == 'url_foto_perfil' ? selectedFile.type != "image/png" && selectedFile.type != "image/jpeg" && selectedFile.type != "image/jpg" : selectedFile.type != "application/pdf") {
-            //console.log('LLEGO');
+
             nameInput == 'url_foto_perfil' ? alert("Solo se permiten imágenes en PNG, JPG y JPEG") : alert("Solo se permiten imágenes en PDF")
             fileInput.value = "";
-            //console.log(btn[0])
+
             btn[0].setAttribute('disabled', 'true');
         } else {
             btn[0].removeAttribute('disabled');
@@ -286,6 +310,7 @@ console.log(JSON.stringify({
         }
     }
 
+    /*Hook para convertir una URL en base 64*/
     const getBase64 = (file) =>
         new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -295,17 +320,6 @@ console.log(JSON.stringify({
 
             reader.onerror = (error) => reject(error);
         });
-
-
-    /*Función que muestra una notificación cuando se ha logrado crear un usuario*/
-    const openNotificationWithIconSuccess = (type) => {
-        notification[type]({
-            message: '¡Usuario creado correctamente!',
-            description:
-                'Los datos ingresados son correctos :)',
-        });
-    };
-
 
     return (
         <>
@@ -362,6 +376,9 @@ console.log(JSON.stringify({
 
             </section>
             <Modal
+                style={{
+                    top: 20,
+                }}
                 visible={visibleClientModal}
                 title="Crear cliente"
                 onCancel={handleCancelClient}
@@ -397,19 +414,19 @@ console.log(JSON.stringify({
                         <div className='d-flex justify-content-center'>
                             <Col span={12} className="m-3">
                                 <Form.Item name="nombre_cliente" label="Nombre completo" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
-                                    <Input type="text" pattern="^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$" title="Ingresa un nombre válido" onChange={handleInputChangeRegisterWorker} name="nombre_cliente" />
+                                    <Input type="text" pattern="^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$" title="Ingresa un nombre válido" onChange={handleInputChangeRegisterClient} name="nombre_cliente" />
                                 </Form.Item>
                                 <Form.Item name="email_cliente" label="Correo electrónico" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
-                                    <Input type="email" pattern="^[^@]+@[^@]+\.[a-zA-Z]{2,}$" title="Ingresa un correo válido" onChange={handleInputChangeRegisterWorker} name="email_cliente" />
+                                    <Input type="email" pattern="^[^@]+@[^@]+\.[a-zA-Z]{2,}$" title="Ingresa un correo válido" onChange={handleInputChangeRegisterClient} name="email_cliente" />
                                 </Form.Item>
 
                             </Col>
                             <Col span={12} className="m-3">
                                 <Form.Item name="contraseña_cliente" label="Contraseña" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
-                                    <Input type="password" pattern="^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$" title="La contraseña debe tener al entre 8 y 16 caracteres, al menos un dígito, al menos una minúscula, al menos una mayúscula y al menos un caracter no alfanumérico." onChange={handleInputChangeRegisterWorker} name="contraseña_cliente" />
+                                    <Input type="password" pattern="^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$" title="La contraseña debe tener al entre 8 y 16 caracteres, al menos un dígito, al menos una minúscula, al menos una mayúscula y al menos un caracter no alfanumérico." onChange={handleInputChangeRegisterClient} name="contraseña_cliente" />
                                 </Form.Item>
                                 <Form.Item name="numero_celular_cliente" label="Número de celular" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
-                                    <Input type="text" pattern="([0-9]{10})" title="Ingresa un número de celular válido" onChange={handleInputChangeRegisterWorker} name="numero_celular_cliente" />
+                                    <Input type="text" pattern="([0-9]{10})" title="Ingresa un número de celular válido" onChange={handleInputChangeRegisterClient} name="numero_celular_cliente" />
                                 </Form.Item>
 
                             </Col>
@@ -428,6 +445,9 @@ console.log(JSON.stringify({
                 </Form>
             </Modal>
             <Modal
+                style={{
+                    top: 20,
+                }}
                 visible={visibleWorkerModal}
                 title="Crear trabajador"
                 onCancel={handleCancelWorker}
@@ -496,21 +516,26 @@ console.log(JSON.stringify({
                     </Row>
 
                     <Row className='col-12 d-flex flex-column align-items-center'>
+                        <p>Ingresar los precios por hora que tienes para cada una de las labores</p>
+                        <p style={{ fontWeight: 'bold' }}>Si no ofreces alguna simplemente no llenas el campo.</p>
+                    </Row>
+
+                    <Row className='col-12 d-flex flex-column align-items-center'>
                         <div className='d-flex justify-content-center'>
                             <Col span={12} className="m-3">
-                                <Form.Item name="precio_hora_labor_plomero" label="Plomero" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
+                                <Form.Item name="precio_hora_labor_plomero" label="Plomero" rules={[{ required: false }]} className="d-flex flex-column">
                                     <Input type="text" pattern="([0-9]{5,6})" title="Ingresa un valor monetario válido de 5 a 6 cifras" onChange={handleInputChangeRegisterEmployee} name="precio_hora_labor_plomero" />
                                 </Form.Item>
-                                <Form.Item name="precio_hora_labor_cerrajero" label="Cerrajero" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
+                                <Form.Item name="precio_hora_labor_cerrajero" label="Cerrajero" rules={[{ required: false }]} className="d-flex flex-column">
                                     <Input type="text" pattern="([0-9]{5,6})" title="Ingresa un valor monetario válido de 5 a 6 cifras" onChange={handleInputChangeRegisterEmployee} name="precio_hora_labor_cerrajero" />
                                 </Form.Item>
 
                             </Col>
                             <Col span={12} className="m-3">
-                                <Form.Item name="precio_hora_labor_profesor" label="Profesor de inglés" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
+                                <Form.Item name="precio_hora_labor_profesor" label="Profesor de inglés" rules={[{ required: false }]} className="d-flex flex-column">
                                     <Input type="text" pattern="([0-9]{5,6})" title="Ingresa un valor monetario válido de 5 a 6 cifras" onChange={handleInputChangeRegisterEmployee} name="precio_hora_labor_profesor" />
                                 </Form.Item>
-                                <Form.Item name="precio_hora_labor_paseador" label="Paseador de perros" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
+                                <Form.Item name="precio_hora_labor_paseador" label="Paseador de perros" rules={[{ required: false }]} className="d-flex flex-column">
                                     <Input type="text" pattern="([0-9]{5,6})" title="Ingresa un valor monetario válido de 5 a 6 cifras" onChange={handleInputChangeRegisterEmployee} name="precio_hora_labor_paseador" />
                                 </Form.Item>
 

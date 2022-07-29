@@ -1,0 +1,7 @@
+
+.contenedor_main {
+    position: absolute;
+    left: 80px;
+    z-index: 1;
+    width: 94%;
+  }

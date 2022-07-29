@@ -1,9 +1,11 @@
 import React from 'react'
 
-const myEmployeesView = () => {
+const MyEmployeesView = () => {
     return (
-        <div>myEmployeesView</div>
+        <div className='contenedor_main'>
+            <h1>Mis empleados</h1>
+        </div>
     )
 }
 
-export default myEmployeesView;
+export default MyEmployeesView;

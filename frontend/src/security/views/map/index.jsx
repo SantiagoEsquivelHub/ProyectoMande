@@ -7,12 +7,27 @@ import './map.css';
 
 const MapView = ({ setDatosCliente, datosCliente, setDatosTrabajador, datosTrabajador }) => {
 
-    const [state, setState] = useState({
-        lat: 3.3758343361732397,
-        lng: -76.52997526101733
+    let [state, setState] = useState({
+        lat: null,
+        lng: null
     })
 
-    const compareinfo = () => {
+    const compareinfo = (e) => {
+        if (setDatosTrabajador == undefined && datosTrabajador == undefined) {
+            setDatosCliente({
+                ...datosCliente,
+                direccion_residencia_cliente: `(${e.lat}, ${e.lng})`
+            })
+        } else if (setDatosCliente == undefined && datosCliente == undefined) {
+            setDatosTrabajador({
+                ...datosTrabajador,
+                direccion_residencia_trabajador: `(${e.lat}, ${e.lng})`
+            })
+        }
+    }
+
+    const compareInfoCallBack = useCallback(() => {
+
         if (setDatosTrabajador == undefined && datosTrabajador == undefined) {
             setDatosCliente({
                 ...datosCliente,
@@ -24,11 +39,11 @@ const MapView = ({ setDatosCliente, datosCliente, setDatosTrabajador, datosTraba
                 direccion_residencia_trabajador: `(${state.lat}, ${state.lng})`
             })
         }
-    }
+    })
 
     function LocationMarker() {
 
-    
+
         const map = useMapEvents({
             click(e) {
                 //setPosition(e.latlng);
@@ -37,20 +52,17 @@ const MapView = ({ setDatosCliente, datosCliente, setDatosTrabajador, datosTraba
                     e.latlng
                 );
 
-                compareinfo()
+                compareinfo(e.latlng)
 
                 map.flyTo(e.latlng);
-                console.log(e.latlng)
-            }, load() {
-                console.log('cague')
-            }
 
+            }
         })
 
         useEffect(() => {
 
             map.flyTo(state)
-              
+
         }, [])
 
 
@@ -65,14 +77,36 @@ const MapView = ({ setDatosCliente, datosCliente, setDatosTrabajador, datosTraba
     const getCurrentPosition = () => {
         navigator.geolocation.getCurrentPosition(
             function (position) {
-                //console.log(position);
-                setState({
+  
+                console.log("state antes", state)
+                /*  setState({
+                     lat: position.coords.latitude,
+                     lng: position.coords.longitude,
+                 }); */
+
+                let localizacion = {
                     lat: position.coords.latitude,
                     lng: position.coords.longitude,
+                }
+                console.log("localizacion", localizacion)
+                
 
-                });
-                //compareinfo()
+                setState(localizacion);
+                if (setDatosTrabajador == undefined && datosTrabajador == undefined) {
+                    setDatosCliente({
+                        ...datosCliente,
+                        direccion_residencia_cliente: `(${localizacion.lat}, ${localizacion.lng})`
+                    })
+                } else if (setDatosCliente == undefined && datosCliente == undefined) {
+                    setDatosTrabajador({
+                        ...datosTrabajador,
+                        direccion_residencia_trabajador: `(${localizacion.lat}, ${localizacion.lng})`
+                    })
+                }
+                //state = localizacion
 
+                console.log("position.coords", position.coords)
+                console.log("state despues", state)
             },
             function (error) {
                 console.error("Error Code = " + error.code + " - " + error.message);
@@ -86,27 +120,20 @@ const MapView = ({ setDatosCliente, datosCliente, setDatosTrabajador, datosTraba
 
 
     useEffect(() => {
+      
+        //compareInfoCallBack();
         getCurrentPosition()
+
     }, []);
 
 
     return (
         <MapContainer center={state} zoom={17}
             whenReady={() => {
-                if (setDatosTrabajador == undefined && datosTrabajador == undefined) {
-                    setDatosCliente({
-                        ...datosCliente,
-                        direccion_residencia_cliente: `(${state.lat}, ${state.lng})`
-                    })
-                } else if (setDatosCliente == undefined && datosCliente == undefined) {
-                    setDatosTrabajador({
-                        ...datosTrabajador,
-                        direccion_residencia_trabajador: `(${state.lat}, ${state.lng})`
-                    })
-                }
+
             }}
             whenCreated={() => {
-               
+
             }}>
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
