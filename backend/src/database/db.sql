@@ -122,15 +122,3 @@ CREATE TABLE contratacion(
 );
 /* FIN CONTRATACIÓN */
 
-
-INSERT INTO estado_trabajador(nombre_estado)
-VALUES
-('Disponible'),
-('Ocupado')
-
-INSERT INTO labor(nombre_labor)
-VALUES
-('Plomero'),
-('Profesor de inglés'),
-('Cerrajero'),
-('Paseador de perros')

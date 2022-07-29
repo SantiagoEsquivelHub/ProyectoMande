@@ -13,3 +13,7 @@ INSERT INTO estado_contratacion(nombre_estado_contratacion)
 VALUES
 ('Pendiente'),
 ('Finalizada');
+
+INSERT INTO contratacion(calificacion_contratacion, pago, id_cliente, id_trabajador, id_labor_trabajador, id_estado_contratacion)
+VALUES
+(5, 20000, 5, 8, 1, 2)
