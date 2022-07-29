@@ -1,0 +1,2 @@
+# ignorar el archivo de configuracion de la base de datos
+backend/src/database/*config.js
