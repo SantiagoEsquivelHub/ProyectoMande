@@ -85,7 +85,7 @@ const resulstOfSearch = async (data) => {
     for (let i = 0; i < latAndLongAll.length; i++) {
         const validarContratacion = await pool.query(`SELECT * FROM contratacion WHERE id_trabajador = ${latAndLongAll[i].id};`);
         //console.log(validarContratacion.rows)
-        if(validarContratacion.rows == ''){
+        if (validarContratacion.rows == '') {
             //console.log("entre")
             const distanciaTrabajador1 = await pool.query(`SELECT haversine(3.4532498,-76.5141266, ${latAndLongAll[i].lat}, ${latAndLongAll[i].lon}) AS distancia, et.nombre_estado, t.id_trabajador, t.nombre_trabajador, t.numero_celular_trabajador, t.url_foto_perfil, t.url_foto_perfil, lt.precio_hora_labor FROM trabajador AS t
             JOIN labor_trabajador AS lt ON t.id_trabajador = lt.id_trabajador
@@ -93,11 +93,11 @@ const resulstOfSearch = async (data) => {
             WHERE lt.id_labor = ${id_labor} AND t.id_trabajador = ${latAndLongAll[i].id}
             ORDER BY lt.precio_hora_labor ASC, distancia DESC`);
             //console.log(distanciaTrabajador1.rows , "A")
-            const agregarCalificacion = {"calificacion_contratacion": "null", ...distanciaTrabajador1.rows[0]}
+            const agregarCalificacion = { "calificacion_contratacion": "null", ...distanciaTrabajador1.rows[0] }
             responseData.push(agregarCalificacion);
-        }else{
+        } else {
             //console.log("entre2")
-            const distanciaTrabajador2 =  await pool.query(`SELECT DISTINCT haversine(3.4532498,-76.5141266, ${latAndLongAll[i].lat}, ${latAndLongAll[i].lon}) AS distancia, et.nombre_estado ,t.id_trabajador, t.nombre_trabajador, t.numero_celular_trabajador, t.url_foto_perfil , lt.precio_hora_labor FROM trabajador AS t
+            const distanciaTrabajador2 = await pool.query(`SELECT DISTINCT haversine(3.4532498,-76.5141266, ${latAndLongAll[i].lat}, ${latAndLongAll[i].lon}) AS distancia, t.direccion_residencia_trabajador, t.numero_celular_trabajador, et.nombre_estado ,t.id_trabajador, t.nombre_trabajador, t.numero_celular_trabajador, t.url_foto_perfil , lt.precio_hora_labor FROM trabajador AS t
             JOIN contratacion AS c ON t.id_trabajador = c.id_trabajador
             JOIN labor_trabajador AS lt ON t.id_trabajador = lt.id_trabajador
             JOIN estado_trabajador AS et ON t.id_estado = et.id_estado
@@ -109,12 +109,12 @@ const resulstOfSearch = async (data) => {
             WHERE lt.id_labor = ${id_labor} AND t.id_trabajador = ${latAndLongAll[i].id}`);
             //console.log(calificacionTrabajadorAVG.rows[0].avg)
             //console.log(calificacionTrabajadorAVG.rows[0].avg , "asdas")
-            const agregarCalificacion = {"calificacion_contratacion": `${calificacionTrabajadorAVG.rows[0].avg}`, ...distanciaTrabajador2.rows[0]}
+            const agregarCalificacion = { "calificacion_contratacion": `${calificacionTrabajadorAVG.rows[0].avg}`, ...distanciaTrabajador2.rows[0] }
             //console.log(agregarCalificacion)
             responseData.push(agregarCalificacion);
             //console.log(responseData)
         }
-        
+
     }
 
 
@@ -154,12 +154,21 @@ const resulstOfSearch = async (data) => {
 
 };
 
+const getInfo = async (id) => {
+    const trabajador = await pool.query(`SELECT * FROM trabajador WHERE id_trabajador = ${id};`);
 
+    if (trabajador.rows != '') {
+        return trabajador.rows;
+    } else {
+        return false;
+    }
+}
 
 
 module.exports = {
     insertWorker,
     insertWorkforce,
     getlabors,
-    resulstOfSearch
+    resulstOfSearch,
+    getInfo
 };
