@@ -70,6 +70,7 @@ const resulstOfSearch = async (data) => {
 
 
     let latAndLongAll = [];
+    let latAndLongAllClient = [];
 
     direccionesTrabajadores.rows.forEach(element => {
         //console.log(element.direccion_residencia_trabajador) //coord
@@ -79,6 +80,17 @@ const resulstOfSearch = async (data) => {
         latAndLongAll.push({ "lat": `${lat}`, "lon": `${lon}`, "id": `${element.id_trabajador}` });
     });
     //console.log(latAndLongAll)
+
+    direccionCliente.rows.forEach(element => {
+        //console.log(element.direccion_residencia_trabajador) //coord
+        const lat = element.direccion_residencia_cliente.split(',')[0].split('(')[1]
+        const lon = element.direccion_residencia_cliente.split(',')[1].split(')')[0]
+        //let latAndLongAll = [...latAndLongAll , {"lat": "", "long": ""}]
+        latAndLongAllClient.push({ "lat": `${lat}`, "lon": `${lon}`});
+    });
+    console.log(latAndLongAllClient, "latAndLongAllClient")
+
+
     var responseData = [];
 
 
@@ -87,22 +99,24 @@ const resulstOfSearch = async (data) => {
         //console.log(validarContratacion.rows)
         if (validarContratacion.rows == '') {
             //console.log("entre")
-            const distanciaTrabajador1 = await pool.query(`SELECT haversine(3.4532498,-76.5141266, ${latAndLongAll[i].lat}, ${latAndLongAll[i].lon}) AS distancia, et.nombre_estado, t.id_trabajador, t.nombre_trabajador, t.numero_celular_trabajador, t.url_foto_perfil, t.url_foto_perfil, lt.precio_hora_labor FROM trabajador AS t
+            const distanciaTrabajador1 = await pool.query(`SELECT l.nombre_labor, haversine(${latAndLongAllClient[0].lat}, ${latAndLongAllClient[0].lon}, ${latAndLongAll[i].lat}, ${latAndLongAll[i].lon}) AS distancia, et.nombre_estado, t.id_trabajador, t.nombre_trabajador, t.numero_celular_trabajador, t.url_foto_perfil, t.url_foto_perfil, lt.precio_hora_labor FROM trabajador AS t
             JOIN labor_trabajador AS lt ON t.id_trabajador = lt.id_trabajador
             JOIN estado_trabajador AS et ON t.id_estado = et.id_estado
+            JOIN labor AS l ON l.id_labor = lt.id_labor
             WHERE lt.id_labor = ${id_labor} AND t.id_trabajador = ${latAndLongAll[i].id}
-            ORDER BY lt.precio_hora_labor ASC, distancia DESC`);
+            ORDER BY distancia DESC, lt.precio_hora_labor ASC`);
             //console.log(distanciaTrabajador1.rows , "A")
             const agregarCalificacion = { "calificacion_contratacion": "null", ...distanciaTrabajador1.rows[0] }
             responseData.push(agregarCalificacion);
         } else {
             //console.log("entre2")
-            const distanciaTrabajador2 = await pool.query(`SELECT DISTINCT haversine(3.4532498,-76.5141266, ${latAndLongAll[i].lat}, ${latAndLongAll[i].lon}) AS distancia, t.direccion_residencia_trabajador, t.numero_celular_trabajador, et.nombre_estado ,t.id_trabajador, t.nombre_trabajador, t.numero_celular_trabajador, t.url_foto_perfil , lt.precio_hora_labor FROM trabajador AS t
+            const distanciaTrabajador2 = await pool.query(`SELECT l.nombre_labor, DISTINCT haversine(${latAndLongAllClient[0].lat}, ${latAndLongAllClient[0].lon}, ${latAndLongAll[i].lat}, ${latAndLongAll[i].lon}) AS distancia, t.direccion_residencia_trabajador, t.numero_celular_trabajador, et.nombre_estado ,t.id_trabajador, t.nombre_trabajador, t.numero_celular_trabajador, t.url_foto_perfil , lt.precio_hora_labor FROM trabajador AS t
             JOIN contratacion AS c ON t.id_trabajador = c.id_trabajador
             JOIN labor_trabajador AS lt ON t.id_trabajador = lt.id_trabajador
             JOIN estado_trabajador AS et ON t.id_estado = et.id_estado
+            JOIN labor AS l ON l.id_labor = lt.id_labor
             WHERE lt.id_labor = ${id_labor} AND t.id_trabajador = ${latAndLongAll[i].id}
-            ORDER BY lt.precio_hora_labor ASC, distancia DESC`);
+            ORDER BY distancia DESC, lt.precio_hora_labor ASC`);
             const calificacionTrabajadorAVG = await pool.query(`SELECT AVG(c.calificacion_contratacion) FROM trabajador AS t
             JOIN contratacion AS c ON t.id_trabajador = c.id_trabajador
             JOIN labor_trabajador AS lt ON t.id_trabajador = lt.id_trabajador
