@@ -84,7 +84,18 @@ const SearchEmployeesView = () => {
           {
             !workers ? '' :
               workers.map(worker => {
-                return <CardEmployee key={worker.id_trabajador} nombre={worker.nombre_trabajador} telefono={worker.numero_celular_trabajador} estado={worker.nombre_estado} url={worker.url_foto_perfil} id={worker.id_trabajador} calificacion={worker.calificacion_contratacion} precio_hora={worker.precio_hora_labor} distancia={worker.distancia} />
+                return <CardEmployee 
+                key={worker.id_trabajador} 
+                nombre={worker.nombre_trabajador} 
+                telefono={worker.numero_celular_trabajador} 
+                estado={worker.nombre_estado} 
+                url={worker.url_foto_perfil} 
+                id={worker.id_trabajador} 
+                calificacion={worker.calificacion_contratacion} 
+                precio_hora={worker.precio_hora_labor} 
+                distancia={worker.distancia}
+                labor={worker.nombre_labor}
+                />
               })
 
           }

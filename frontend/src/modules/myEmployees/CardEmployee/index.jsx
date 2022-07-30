@@ -1,14 +1,14 @@
 import React, { useState } from 'react'
 import { Rate } from 'antd';
 import './style.css';
-import {
-    Modal
-} from 'antd';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { Button, Modal, Space } from 'antd';
 import { headers } from '../../../containers/headers/headers';
 import MapWorkerView from './map';
 
+const { confirm } = Modal;
 
-const CardEmployee = ({ nombre, telefono, estado, url, id, calificacion, precio_hora, distancia }) => {
+const CardEmployee = ({ nombre, telefono, estado, url, id, calificacion, precio_hora, distancia, labor }) => {
 
     /*Estados generales*/
     const [workerInfo, setWorkerInfo] = useState(false);
@@ -27,7 +27,7 @@ const CardEmployee = ({ nombre, telefono, estado, url, id, calificacion, precio_
         console.log(ruta);
         const res = await fetch(ruta, requestOptions);
         const data = await res.json();
-        console.log(data[0]);
+
         setWorkerInfo(data[0]);
     }
 
@@ -35,7 +35,7 @@ const CardEmployee = ({ nombre, telefono, estado, url, id, calificacion, precio_
     const openWorker = (e) => {
 
         let idWorker = e.target.id;
-        console.log(idWorker);
+
         getWorkers(idWorker);
 
         setVisibleWatchWorker(true)
@@ -45,6 +45,20 @@ const CardEmployee = ({ nombre, telefono, estado, url, id, calificacion, precio_
     /*Función quecierra un modal con la información del trabajador*/
     const handleCancelWorker = () => {
         setVisibleWatchWorker(false);
+    };
+
+    const showConfirm = (nombre, precio, labor) => {
+        confirm({
+            title: `¿Quieres contratar a ${nombre}?`,
+            icon: <ExclamationCircleOutlined />,
+            content: `Por $${precio} la hora, por la labor de ${labor}`,
+            onOk() {
+                console.log('OK');
+            },
+            onCancel() {
+                console.log('Cancel');
+            },
+        });
     };
 
     return (
@@ -66,6 +80,9 @@ const CardEmployee = ({ nombre, telefono, estado, url, id, calificacion, precio_
                     <div className="ant-list-item-meta-description info">{telefono}</div>
                 </div>
                 <div className="ant-list-item-meta-content">
+                    <div className="ant-list-item-meta-description info">{precio_hora}</div>
+                </div>
+                <div className="ant-list-item-meta-content">
                     <div className="ant-list-item-meta-description info">Está a {Math.round(distancia)} km de tí</div>
                 </div>
                 <div className="ant-list-item-meta-content">
@@ -77,7 +94,7 @@ const CardEmployee = ({ nombre, telefono, estado, url, id, calificacion, precio_
                     <div className={estado == 'Disponible' ? 'activo ' : 'deshabilitado'}>{estado == 'Disponible' ? estado : 'Ocupado'}</div>
                 </div>
                 <div className="ant-list-item-meta-content">
-                    <div className={estado == 'Disponible' ? 'contratar' : 'ocupado'}>{estado == 'Disponible' ? 'Contratar' : 'Ocupado'}</div>
+                    <div onClick={() => showConfirm(nombre, precio_hora, labor)} className={estado == 'Disponible' ? 'contratar' : 'ocupado'}>{estado == 'Disponible' ? 'Contratar' : 'Ocupado'}</div>
                 </div>
             </div>
 
