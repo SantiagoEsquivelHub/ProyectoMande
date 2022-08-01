@@ -4,7 +4,7 @@ let rol = localStorage.getItem('rol')
 export let Links;
 
 
-rol === 'cliente' ?  
+rol == 'cliente' ?  
 Links = [
   {
     to: '/main',

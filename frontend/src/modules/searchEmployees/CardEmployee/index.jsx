@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Rate } from 'antd';
 import './style.css';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
-import { Button, Modal, Space } from 'antd';
+import { Button, Modal, Space, notification } from 'antd';
 import { headers } from '../../../containers/headers/headers';
 import MapWorkerView from './map';
 
@@ -24,7 +24,7 @@ const CardEmployee = ({ nombre, telefono, estado, url, id, calificacion, precio_
         }
 
         const ruta = `http://${document.domain}:4001/api/worker/info/` + idWorker;
-        console.log(ruta);
+
         const res = await fetch(ruta, requestOptions);
         const data = await res.json();
 
@@ -47,17 +47,76 @@ const CardEmployee = ({ nombre, telefono, estado, url, id, calificacion, precio_
         setVisibleWatchWorker(false);
     };
 
-    const showConfirm = (nombre, precio, labor) => {
+    const showConfirm = (e, nombre, precio, labor) => {
+
+        let idTrabajador = e.target.id;
+        let idCliente = localStorage.getItem('id');
+        let id_labor;
+        console.log(idTrabajador, "idTrabajador")
+        console.log(idCliente, "idCliente")
+
+        if (labor == 'Plomero') {
+            id_labor = '1';
+        } else if (labor == 'Profesor de inglés') {
+            id_labor = '2';
+        } else if (labor == 'Cerrajero') {
+            id_labor = '3';
+        } else if (labor == 'Paseador de perros') {
+            id_labor = '4';
+        }
+
         confirm({
             title: `¿Quieres contratar a ${nombre}?`,
             icon: <ExclamationCircleOutlined />,
             content: `Por $${precio} la hora, por la labor de ${labor}`,
-            onOk() {
+            async onOk() {
                 console.log('OK');
+
+                const requestOptions = {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify({
+                        id_cliente: idCliente,
+                        id_trabajador: idTrabajador,
+                        id_labor: id_labor,
+                    })
+                }
+
+
+                const resp = await fetch(`http://${document.domain}:4001/api/hiring/create/`, requestOptions)
+
+                if (resp.status == 200) {
+                    openNotificationWithIconSuccess('success');
+                    setTimeout(() => {
+                        window.location.reload()
+                    }, 2000);
+
+                } else {
+                    openNotificationWithIcon('warning')
+                }
+
             },
             onCancel() {
                 console.log('Cancel');
             },
+        });
+    };
+
+    /*Función para mostrar notificación cuando no se logre crear la contratacion por algun motivo*/
+    const openNotificationWithIcon = (type) => {
+        notification[type]({
+            message: '¡Contratación sin exito!',
+            description:
+                'No se pudo contratar al trabajador. Inténtalo de nuevo :)',
+        });
+    };
+
+    /*Función que muestra una notificación cuando se ha logrado crear un usuario*/
+    const openNotificationWithIconSuccess = (type) => {
+        notification[type]({
+            message: '¡Contratación registrada correctamente!',
+            description:
+                'El trabajador ha sido informado correctamente :)',
         });
     };
 
@@ -94,7 +153,7 @@ const CardEmployee = ({ nombre, telefono, estado, url, id, calificacion, precio_
                     <div className={estado == 'Disponible' ? 'activo ' : 'deshabilitado'}>{estado == 'Disponible' ? estado : 'Ocupado'}</div>
                 </div>
                 <div className="ant-list-item-meta-content">
-                    <div onClick={() => showConfirm(nombre, precio_hora, labor)} className={estado == 'Disponible' ? 'contratar' : 'ocupado'}>{estado == 'Disponible' ? 'Contratar' : 'Ocupado'}</div>
+                    <div id={id} onClick={(e) => showConfirm(e, nombre, precio_hora, labor)} className={estado == 'Disponible' ? 'contratar' : 'ocupado'}>{estado == 'Disponible' ? 'Contratar' : 'Ocupado'}</div>
                 </div>
             </div>
 

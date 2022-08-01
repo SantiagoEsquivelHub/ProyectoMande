@@ -70,6 +70,15 @@ const LoginView = ({ setToken }) => {
         precio_hora_labor_paseador: ""
     });
 
+    /*Función para mostrar notificación cuando no se pudo crear el usuario en la base de datos*/
+    const openNotificationWithIconCreate = (type) => {
+        notification[type]({
+            message: '¡Creación de usuario fallida!',
+            description:
+                'No se pudo crear el usuario. Inténtalo de nuevo :)',
+        });
+    };
+
     /*Función para mostrar notificación cuando los datos del usuario para el login son incorrectos*/
     const openNotificationWithIcon = (type) => {
         notification[type]({
@@ -189,15 +198,20 @@ const LoginView = ({ setToken }) => {
 
         const resp = await fetch(`http://${document.domain}:4001/api/client/create`, requestOptions)
 
-        openNotificationWithIconSuccess('success');
-        setLoadingClient(true);
+        if (respEmp.status == 200) {
+            openNotificationWithIconSuccess('success');
+            setLoadingClient(true);
 
-        setTimeout(() => {
-            setLoadingClient(false);
-            setVisibleClientModal(false);
-            onResetClient();
-            window.location.reload();
-        }, 2000);
+            setTimeout(() => {
+                setLoadingClient(false);
+                setVisibleClientModal(false);
+                onResetClient();
+                window.location.reload();
+            }, 2000);
+        } else {
+            openNotificationWithIconCreate('warning')
+        }
+
 
     }
 
@@ -231,7 +245,7 @@ const LoginView = ({ setToken }) => {
                 window.location.reload();
             }, 2000);
         } else {
-
+            openNotificationWithIconCreate('warning')
         }
 
 
