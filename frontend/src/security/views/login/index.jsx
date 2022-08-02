@@ -226,10 +226,7 @@ const LoginView = ({ setToken }) => {
                 id_estado: '1'
             })
         }
-        console.log(JSON.stringify({
-            ...datosTrabajador,
-            id_estado: '1'
-        }))
+  
         const respEmp = await fetch(`http://${document.domain}:4001/api/worker/create`, requestOptions)
         console.log(respEmp)
 

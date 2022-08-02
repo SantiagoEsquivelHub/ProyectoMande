@@ -26,7 +26,6 @@ const MainRouter = ({ location }) => {
 
     /*Si el rol del usuario es Administrador, entonces lo redireccionamos al Dashboard*/
     if (rol == 'cliente' && location.pathname === '/') {
-        console.log(location.pathname)
         return <Navigate to='/main' />;
     }
 

@@ -4,9 +4,12 @@ import './style.css';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { Button, Modal, Space, notification } from 'antd';
 import { headers } from '../../../containers/headers/headers';
-import MapWorkerView from './map';
+import OpenEmployee from '../../../containers/openEmployee';
+import { useGetEmployees } from '../../../hooks/useGetEmployees'
 
 const { confirm } = Modal;
+
+/*Componente usado para mostrar cada uno de los trabajadores segun un filtro previo*/
 
 const CardEmployee = ({ nombre, telefono, estado, url, id, calificacion, precio_hora, distancia, labor }) => {
 
@@ -16,27 +19,19 @@ const CardEmployee = ({ nombre, telefono, estado, url, id, calificacion, precio_
     let direccion_cliente = localStorage.getItem('direccion')
 
     /*Función para obtener la data de cada usuario*/
-    const getWorkers = async (idWorker) => {
+    const getEmployees = async (idWorker) => {
 
-        const requestOptions = {
-            method: 'GET',
-            headers: headers,
-        }
+      const data = await useGetEmployees(idWorker);
 
-        const ruta = `http://${document.domain}:4001/api/worker/info/` + idWorker;
-
-        const res = await fetch(ruta, requestOptions);
-        const data = await res.json();
-
-        setWorkerInfo(data[0]);
+        setWorkerInfo(data);
     }
 
     /*Función que muestra un modal con la información del trabajador*/
-    const openWorker = (e) => {
+    const openEmployee = (e) => {
 
         let idWorker = e.target.id;
 
-        getWorkers(idWorker);
+        getEmployees(idWorker);
 
         setVisibleWatchWorker(true)
 
@@ -47,13 +42,12 @@ const CardEmployee = ({ nombre, telefono, estado, url, id, calificacion, precio_
         setVisibleWatchWorker(false);
     };
 
+    /*Función para contratar un trabajador*/
     const showConfirm = (e, nombre, precio, labor) => {
 
         let idTrabajador = e.target.id;
         let idCliente = localStorage.getItem('id');
         let id_labor;
-        console.log(idTrabajador, "idTrabajador")
-        console.log(idCliente, "idCliente")
 
         if (labor == 'Plomero') {
             id_labor = '1';
@@ -70,7 +64,6 @@ const CardEmployee = ({ nombre, telefono, estado, url, id, calificacion, precio_
             icon: <ExclamationCircleOutlined />,
             content: `Por $${precio} la hora, por la labor de ${labor}`,
             async onOk() {
-                console.log('OK');
 
                 const requestOptions = {
                     method: 'POST',
@@ -97,7 +90,7 @@ const CardEmployee = ({ nombre, telefono, estado, url, id, calificacion, precio_
 
             },
             onCancel() {
-                console.log('Cancel');
+
             },
         });
     };
@@ -111,7 +104,7 @@ const CardEmployee = ({ nombre, telefono, estado, url, id, calificacion, precio_
         });
     };
 
-    /*Función que muestra una notificación cuando se ha logrado crear un usuario*/
+    /*Función que muestra una notificación cuando se ha logrado crear la contratacion*/
     const openNotificationWithIconSuccess = (type) => {
         notification[type]({
             message: '¡Contratación registrada correctamente!',
@@ -132,7 +125,7 @@ const CardEmployee = ({ nombre, telefono, estado, url, id, calificacion, precio_
                 </div>
                 <div className="ant-list-item-meta-content">
                     <h4 className="ant-list-item-meta-title" >
-                        <a onClick={openWorker} id={id}>{nombre}</a>
+                        <a onClick={openEmployee} id={id}>{nombre}</a>
                     </h4>
                 </div>
                 <div className="ant-list-item-meta-content">
@@ -160,60 +153,35 @@ const CardEmployee = ({ nombre, telefono, estado, url, id, calificacion, precio_
             </li>
 
 
-            <Modal
-                style={{
-                    top: 20,
-                }}
-                visible={visibleWatchWorker}
-                title="Ver trabajador"
-                onCancel={handleCancelWorker}
-                width="800px"
-                footer={[
-
-                ]}
-            >
 
 
+            {
+                !workerInfo ? '' :
+                    <Modal
+                        style={{
+                            top: 20,
+                        }}
+                        visible={visibleWatchWorker}
+                        title="Ver trabajador"
+                        onCancel={handleCancelWorker}
+                        width="800px"
+                        footer={[
+
+                        ]}
+                    >
+                        <OpenEmployee
+                            nombre={workerInfo.nombre_trabajador}
+                            correo={workerInfo.email_trabajador}
+                            celular={workerInfo.numero_celular_trabajador}
+                            direccion_cliente={direccion_cliente}
+                            direccion_trabajador={workerInfo.direccion_residencia_trabajador}
+                            img={workerInfo.url_foto_perfil}
+                        />
+                    </Modal>
+
+            }
 
 
-                {
-                    !workerInfo ? 'Cargando...' :
-                        <>
-                            <div className='d-flex justify-content-center align-items-center imgUser m-2'>
-                                <img src={workerInfo.url_foto_perfil} />
-                            </div>
-                            <table className='tableUser table table-bordered'>
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Campo</th>
-                                        <th scope="col">Información</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-                                    <tr>
-                                        <td>Nombre</td>
-                                        <td>{workerInfo.nombre_trabajador}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Correo</td>
-                                        <td>{workerInfo.email_trabajador}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Celular</td>
-                                        <td>{workerInfo.numero_celular_trabajador}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-                            <MapWorkerView
-                                direccion_cliente={direccion_cliente}
-                                direccion_trabajador={workerInfo.direccion_residencia_trabajador}
-                                nombre_trabajador={workerInfo.nombre_trabajador} />
-                        </>
-                }
-
-            </Modal>
         </div>
     )
 }

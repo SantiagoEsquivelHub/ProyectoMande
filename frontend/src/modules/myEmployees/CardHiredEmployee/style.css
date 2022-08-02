@@ -1,0 +1,7 @@
+.cardHiredEmployee {
+  border: 1px solid #44d2ff;
+  border-radius: 20px;
+  width: 350px;
+  max-width: 350px;
+  text-align: center;
+}

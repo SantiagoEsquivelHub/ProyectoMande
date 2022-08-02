@@ -46,8 +46,7 @@ const MapView = ({ setDatosCliente, datosCliente, setDatosTrabajador, datosTraba
 
         const map = useMapEvents({
             click(e) {
-                //setPosition(e.latlng);
-                console.log(e.latlng)
+               
                 setState(
                     e.latlng
                 );
@@ -77,20 +76,12 @@ const MapView = ({ setDatosCliente, datosCliente, setDatosTrabajador, datosTraba
     const getCurrentPosition = () => {
         navigator.geolocation.getCurrentPosition(
             function (position) {
-  
-                console.log("state antes", state)
-                /*  setState({
-                     lat: position.coords.latitude,
-                     lng: position.coords.longitude,
-                 }); */
 
                 let localizacion = {
                     lat: position.coords.latitude,
                     lng: position.coords.longitude,
                 }
-                console.log("localizacion", localizacion)
-                
-
+               
                 setState(localizacion);
                 if (setDatosTrabajador == undefined && datosTrabajador == undefined) {
                     setDatosCliente({

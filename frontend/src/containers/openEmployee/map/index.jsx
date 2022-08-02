@@ -5,9 +5,6 @@ import 'leaflet/dist/leaflet.css';
 
 const MapWorkerView = ({ direccion_cliente, direccion_trabajador, nombre_trabajador }) => {
 
-    console.log('direccion_cliente', direccion_cliente)
-
-
     let [state, setState] = useState({
         lat: null,
         lng: null
@@ -59,7 +56,7 @@ const MapWorkerView = ({ direccion_cliente, direccion_trabajador, nombre_trabaja
 
         useEffect(() => {
 
-            map.flyTo(coordsCliente)
+            map.flyTo(coordsTrabajador)
 
         }, [])
         return (
