@@ -7,14 +7,18 @@ import {
     Button,
     Col,
     Row,
+    Select
 } from 'antd';
 import OpenEmployee from '../../../containers/openEmployee';
 import { useGetEmployees } from '../../../hooks/useGetEmployees'
+import { headers } from '../../../containers/headers/headers';
 
 const layout = {
     labelCol: { span: 20 },
     wrapperCol: { span: 50 },
 };
+
+const { Option } = Select;
 
 const CardHiredEmployee = ({ nombre, precio, labor, estado_contratacion, foto, id }) => {
 
@@ -23,11 +27,25 @@ const CardHiredEmployee = ({ nombre, precio, labor, estado_contratacion, foto, i
     const [isModalVisiblePay, setIsModalVisiblePay] = useState(false);
     const [formPay] = Form.useForm();
     const [workerInfo, setWorkerInfo] = useState(false);
-    const [visibleWatchWorker, setVisibleWatchWorker] = useState(false)
+    const [visibleWatchWorker, setVisibleWatchWorker] = useState(false);
+    const [tipoTarjeta, setTipoTarjeta] = useState(false);
+    const [datosTarjeta, setDatosTarjeta] = useState({
+        numero_tarjeta: '',
+        clave_tarjeta: '',
+        id_tipo: '',
+        fecha_caducidad: ''
+    });
     let direccion_cliente = localStorage.getItem('direccion')
 
-    const showModalPay = () => {
+    const showModalPay = async () => {
         setIsModalVisiblePay(true);
+        const data = await getCardTypes();
+        console.log(data, 'llego')
+        setTipoTarjeta(data)
+    };
+
+    const handleCancelPay = () => {
+        setIsModalVisiblePay(false);
     };
 
     /*Función para limpiar los campos del formulario de creacion de tarjetas*/
@@ -36,18 +54,44 @@ const CardHiredEmployee = ({ nombre, precio, labor, estado_contratacion, foto, i
     };
 
 
-    const handleSubmitPay = () => {
+    const handleSubmitPay = async () => {
 
+        const requestOptions = {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify({
+                ...datosTarjeta
+            })
+        }
+
+        const resp = await fetch(`http://${document.domain}:4001/api/card/create/`, requestOptions)
+        console.log(resp)
+
+        if (resp.status == 200) {
+
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
+        } else {
+
+        }
     }
 
     /*Función para actualizar los datos de la tarjeta cada vez que hace cambios en los inputs de su formulario*/
     const handleInputChangePay = (e) => {
 
-        setDatosCliente({
-            ...datosCliente,
+        setDatosTarjeta({
+            ...datosTarjeta,
             [e.target.name]: e.target.value
         })
 
+    }
+
+    const handleSelectChange = (value) => {
+        setDatosTarjeta({
+            ...datosTarjeta,
+            id_tipo: `${value}`
+        })
     }
 
     /*Función que muestra un modal con la información del trabajador*/
@@ -65,14 +109,27 @@ const CardHiredEmployee = ({ nombre, precio, labor, estado_contratacion, foto, i
     const getEmployees = async (idWorker) => {
 
         const data = await useGetEmployees(idWorker);
-
         setWorkerInfo(data);
+    }
+
+    /*Función para obtener los tipos de tarjetas*/
+    const getCardTypes = async () => {
+
+        const requestOptions = {
+            method: 'GET',
+            headers: headers
+        }
+
+        const resp = await fetch(`http://${document.domain}:4001/api/card/get/`, requestOptions)
+        const data = await resp.json();
+        return data;
     }
 
     /*Función quecierra un modal con la información del trabajador*/
     const handleCancelWorker = () => {
         setVisibleWatchWorker(false);
     };
+
 
 
 
@@ -87,27 +144,41 @@ const CardHiredEmployee = ({ nombre, precio, labor, estado_contratacion, foto, i
                 <Button type="dashed" className='mb-3' onClick={showModalPay} id={id}>Agregar medio de pago</Button>
             </div>
 
-            <Modal title="Agregar medio de pago" visible={isModalVisiblePay} footer={[]}>
+            <Modal title="Agregar medio de pago" visible={isModalVisiblePay} onCancel={handleCancelPay} width={800} footer={[]}>
 
-                <Form {...layout} form={formPay} name="crearCliente" className="crearCliente" id="crearCliente" onFinish={handleSubmitPay}>
+                <Form {...layout} form={formPay} name="crearTarjeta" className="crearTarjeta" id="crearTarjeta" onFinish={handleSubmitPay}>
 
                     <Row className='col-12 d-flex flex-column align-items-center'>
                         <div className='d-flex justify-content-center'>
                             <Col span={12} className="m-3">
-                                <Form.Item name="nombre_cliente" label="Nombre completo" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
-                                    <Input type="text" pattern="^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$" title="Ingresa un nombre válido" onChange={handleInputChangePay} name="nombre_cliente" />
+                                <Form.Item name="numero_tarjeta" label="Número" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
+                                    <Input type="text" pattern="([0-9]{16})" title="Ingresa un número de tarjeta válido" onChange={handleInputChangePay} name="numero_tarjeta" />
                                 </Form.Item>
-                                <Form.Item name="email_cliente" label="Correo electrónico" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
-                                    <Input type="email" pattern="^[^@]+@[^@]+\.[a-zA-Z]{2,}$" title="Ingresa un correo válido" onChange={handleInputChangePay} name="email_cliente" />
-                                </Form.Item>
+                                <Form.Item name="id_tipo" label="Tipo" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
+                                    <Select required
+                                        defaultValue='Seleccione:'
+                                        placeholder=""
+                                        onChange={handleSelectChange}
+                                        allowClear
+                                        name="id_tipo"
+                                    >
+                                        {!tipoTarjeta ? 'Cargando...' :
 
+                                            tipoTarjeta.map((tipoTarjeta) => {
+                                                return <Option key={tipoTarjeta.id_tipo} value={tipoTarjeta.id_tipo}>{tipoTarjeta.nombre_tipo}-{tipoTarjeta.marca_tipo}-{tipoTarjeta.banco_tipo}</Option>
+
+                                            })
+
+                                        }
+                                    </Select>
+                                </Form.Item>
                             </Col>
                             <Col span={12} className="m-3">
-                                <Form.Item name="contraseña_cliente" label="Contraseña" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
-                                    <Input type="password" pattern="^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$" title="La contraseña debe tener al entre 8 y 16 caracteres, al menos un dígito, al menos una minúscula, al menos una mayúscula y al menos un caracter no alfanumérico." onChange={handleInputChangePay} name="contraseña_cliente" />
+                                <Form.Item name="clave_tarjeta" label="Clave" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
+                                    <Input type="password" pattern="([0-9]{4})" title="Ingresa una clave de tarjeta válida" onChange={handleInputChangePay} name="clave_tarjeta" />
                                 </Form.Item>
-                                <Form.Item name="numero_celular_cliente" label="Número de celular" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
-                                    <Input type="text" pattern="([0-9]{10})" title="Ingresa un número de celular válido" onChange={handleInputChangePay} name="numero_celular_cliente" />
+                                <Form.Item name="fecha_caducidad" label="Fecha de caducidad" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
+                                    <Input type="date" pattern="([0-9]{10})" title="Ingresa un número de celular válido" onChange={handleInputChangePay} name="fecha_caducidad" />
                                 </Form.Item>
 
                             </Col>
