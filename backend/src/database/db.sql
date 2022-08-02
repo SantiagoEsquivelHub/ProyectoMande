@@ -20,7 +20,7 @@ CREATE TABLE tipo_tarjeta(
 CREATE TABLE tarjeta(
     id_tarjeta SERIAL,
     numero_tarjeta VARCHAR NULL, 
-    clave_tarjeta INT NULL, 
+    clave_tarjeta VARCHAR NULL, 
     fecha_caducidad DATE NULL,
     id_tipo INT NULL, 
     PRIMARY KEY (id_tarjeta),
