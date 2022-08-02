@@ -11,13 +11,44 @@ VALUES
 
 INSERT INTO estado_contratacion(nombre_estado_contratacion)
 VALUES
-('Pendiente'),
-('Finalizada');
+('Trabajando'),
+('Finalizada'),
+('Pendiente de pago');
 
 INSERT INTO contratacion(calificacion_contratacion, pago, id_cliente, id_trabajador, id_labor_trabajador, id_estado_contratacion)
 VALUES
 (5, 20000, 5, 8, 1, 2)
 
+INSERT INTO tipo_tarjeta(nombre_tipo, marca_tipo, banco_tipo)
+VALUES
+('Débito', 'Visa', 'Bancolombia'),
+('Crédito', 'Visa', 'Bancolombia'),
+('Débito', 'MasterCard', 'Bancolombia'),
+('Crédito', 'MasterCard', 'Bancolombia'),
+
+('Débito', 'Visa', 'Banco Davivienda'),
+('Crédito', 'Visa', 'Banco Davivienda'),
+('Débito', 'MasterCard', 'Banco Davivienda'),
+('Crédito', 'MasterCard', 'Banco Davivienda'),
+
+('Débito', 'Visa', 'Banco de Bogotá'),
+('Crédito', 'Visa', 'Banco de Bogotá'),
+('Débito', 'MasterCard', 'Banco de Bogotá'),
+('Crédito', 'MasterCard', 'Banco de Bogotá'),
+
+('Débito', 'Visa', 'Banco Popular'),
+('Crédito', 'Visa', 'Banco Popular'),
+('Débito', 'MasterCard', 'Banco Popular'),
+('Crédito', 'MasterCard', 'Banco Popular'),
+
+('Débito', 'Visa', 'Banco de Occidente'),
+('Crédito', 'Visa', 'Banco de Occidente'),
+('Débito', 'MasterCard', 'Banco de Occidente'),
+('Crédito', 'MasterCard', 'Banco de Occidente');
+
+INSERT INTO tarjeta(numero_tarjeta, clave_tarjeta, id_tipo, fecha_caducidad)
+VALUES
+('1234567890123456', 12345, 1, '2024-03-01')
 
 /* FUNCIONES */
 

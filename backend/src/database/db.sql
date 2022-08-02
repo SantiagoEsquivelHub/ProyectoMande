@@ -8,7 +8,7 @@ CREATE TYPE rol_type AS ENUM ('Cliente', 'Trabajador');
 
 /* CLIENTE */
 /*Creamos la tabla Tipo de Tarjeta */
-CREATE TABLE tipo(
+CREATE TABLE tipo_tarjeta(
     id_tipo SERIAL,
     nombre_tipo VARCHAR NULL, 
     marca_tipo VARCHAR NULL, 
@@ -19,8 +19,9 @@ CREATE TABLE tipo(
 /*Creamos la tabla Tarjeta */
 CREATE TABLE tarjeta(
     id_tarjeta SERIAL,
-    numero_tarjeta INT NULL, 
+    numero_tarjeta VARCHAR NULL, 
     clave_tarjeta INT NULL, 
+    fecha_caducidad DATE NULL,
     id_tipo INT NULL, 
     PRIMARY KEY (id_tarjeta),
     FOREIGN KEY (id_tipo) REFERENCES tipo(id_tipo)
@@ -110,6 +111,7 @@ CREATE TABLE contratacion(
     id_contratacion SERIAL,
     calificacion_contratacion INT NULL, 
     pago INT NULL,
+    horas_laboradas INT NULL,
     id_cliente INT NULL,
     id_trabajador INT NULL,
     id_labor_trabajador INT NULL,

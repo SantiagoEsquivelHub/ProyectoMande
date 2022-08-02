@@ -25,7 +25,7 @@ const viewHiring = async (data) => {
     const { id, tipo } = data;
     console.log(tipo)
     if (tipo == "id_cliente") {
-        let get = await pool.query(`SELECT t.nombre_trabajador, l.nombre_labor , lt.precio_hora_labor , ec.nombre_estado_contratacion, t.url_foto_perfil
+        let get = await pool.query(`SELECT t.nombre_trabajador, l.nombre_labor , lt.precio_hora_labor , ec.nombre_estado_contratacion, t.url_foto_perfil, t.id_trabajador
         FROM contratacion AS c
         JOIN estado_contratacion AS ec ON c.id_estado_contratacion = ec.id_estado_contratacion
         JOIN labor_trabajador AS lt ON c.id_labor_trabajador = lt.id_labor_trabajador
