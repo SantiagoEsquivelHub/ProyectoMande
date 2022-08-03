@@ -41,3 +41,11 @@
   );
   margin: 1% auto 3% !important;
 }
+
+.contenedor_main .ocultar {
+  display: none !important;
+}
+
+.contenedor_main .ant-form-item-label {
+  text-align: left !important;
+}

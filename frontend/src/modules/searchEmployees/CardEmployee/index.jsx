@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Rate } from 'antd';
-import './style.css';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
-import { Button, Modal, Space, notification } from 'antd';
+import { Modal, notification } from 'antd';
 import { headers } from '../../../containers/headers/headers';
 import OpenEmployee from '../../../containers/openEmployee';
 import { useGetEmployees } from '../../../hooks/useGetEmployees'
+import './style.css';
 
 const { confirm } = Modal;
 
@@ -15,13 +15,14 @@ const CardEmployee = ({ nombre, telefono, estado, url, id, calificacion, precio_
 
     /*Estados generales*/
     const [workerInfo, setWorkerInfo] = useState(false);
-    const [visibleWatchWorker, setVisibleWatchWorker] = useState(false)
-    let direccion_cliente = localStorage.getItem('direccion')
+    const [visibleWatchWorker, setVisibleWatchWorker] = useState(false);
+    let id_cliente = localStorage.getItem('id');
+    let direccion_cliente = localStorage.getItem('direccion');
 
     /*Función para obtener la data de cada usuario*/
     const getEmployees = async (idWorker) => {
 
-      const data = await useGetEmployees(idWorker);
+        const data = await useGetEmployees(idWorker);
 
         setWorkerInfo(data);
     }
@@ -46,7 +47,6 @@ const CardEmployee = ({ nombre, telefono, estado, url, id, calificacion, precio_
     const showConfirm = (e, nombre, precio, labor) => {
 
         let idTrabajador = e.target.id;
-        let idCliente = localStorage.getItem('id');
         let id_labor;
 
         if (labor == 'Plomero') {
@@ -69,7 +69,7 @@ const CardEmployee = ({ nombre, telefono, estado, url, id, calificacion, precio_
                     method: 'POST',
                     headers: headers,
                     body: JSON.stringify({
-                        id_cliente: idCliente,
+                        id_cliente: id_cliente,
                         id_trabajador: idTrabajador,
                         id_labor: id_labor,
                     })
