@@ -112,6 +112,7 @@ CREATE TABLE contratacion(
     calificacion_contratacion INT NULL, 
     pago INT NULL,
     horas_laboradas INT NULL,
+    fecha_contratacion DATE NULL,
     id_cliente INT NULL,
     id_trabajador INT NULL,
     id_labor_trabajador INT NULL,

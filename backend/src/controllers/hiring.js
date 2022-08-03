@@ -1,5 +1,5 @@
 const { response } = require('express');
-const { hireWorker , viewHiring} = require( '../services/hiring')
+const { hireWorker, viewHiring, getHiringFinished} = require( '../services/hiring')
 
 
 const create = async (req, res = response) => {
@@ -24,11 +24,20 @@ const getHirings = async (req, res = response) => {
 }
 
 
+const getHistorial = async (req, res = response) => {
+    const query = await getHiringFinished(req.body) 
+    if(query != ''){
+        res.json(query).status(200)
+    }else{
+        res.status(400).send("No hay ninguna contratación")
+    }
+}
 
 
 
 
 module.exports = {
     create,
-    getHirings
+    getHirings,
+    getHistorial
 }

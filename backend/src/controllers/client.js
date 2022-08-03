@@ -17,7 +17,7 @@ const create = async (req, res = response) => {
 const eliminate = async (req, res = response) => {
     
     const deleteService = await deleteClient(req.params);
-    console.log(deleteService)
+   
     if(deleteService){
         res.status(200).send("Cliente eliminado con exito");
     }else{

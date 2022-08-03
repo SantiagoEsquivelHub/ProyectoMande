@@ -1,5 +1,5 @@
 const { response } = require('express');
-const { insertCard, getCardTypes } = require('../services/card')
+const { insertCard, getCardTypes, getCardsClient } = require('../services/card')
 
 
 const create = async (req, res = response) => {
@@ -23,7 +23,18 @@ const get = async (req , res = response) => {
     }
 }
 
+const cards = async (req , res = response) => {
+    let { id } = req.params;
+    const get = await getCardsClient(id);
+    if(get){
+        res.json(get).status(200)
+    }else{
+        res.status(400).send("Este cliente no tiene tarjetas")
+    }
+}
+
 module.exports = {
     create,
-    get
+    get,
+    cards
 }
