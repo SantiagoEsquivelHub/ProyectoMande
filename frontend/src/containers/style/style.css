@@ -46,6 +46,16 @@
   display: none !important;
 }
 
-.contenedor_main .ant-form-item-label {
+.ant-form-item-label {
   text-align: left !important;
+}
+
+.contenedor_main .timeline_interna {
+  overflow: auto;
+  height: 40vh;
+}
+
+.lista {
+  overflow: auto;
+  height: 85vh;
 }

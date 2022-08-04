@@ -28,6 +28,7 @@ const update = async (req, res = response) => {
 
 const getHirings = async (req, res = response) => {
     const query = await viewHiring(req.body) 
+
     if(query != ''){
         res.json(query).status(200)
     }else{

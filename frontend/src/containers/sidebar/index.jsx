@@ -79,7 +79,7 @@ const Sidebar = ({ setToken }) => {
 
 
                 <div className="linksContainer">
-                    {Links && Links.map(({ text, to, svg }) => (
+                    {dataUser.rol == 'cliente' && Links && Links.map(({ text, to, svg }) => (
                         <Item key={text} open={open} to={to} svg={svg} text={text}>{text}</Item>
                     ))}
                 </div>

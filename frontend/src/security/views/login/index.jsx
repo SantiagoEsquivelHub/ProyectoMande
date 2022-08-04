@@ -64,10 +64,10 @@ const LoginView = ({ setToken }) => {
         nombre_trabajador: "",
         contraseña_trabajador: "",
         rol_trabajador: "Trabajador",
-        precio_hora_labor_plomero: "",
-        precio_hora_labor_cerrajero: "",
-        precio_hora_labor_profesor: "",
-        precio_hora_labor_paseador: ""
+        precio_hora_labor_plomero: null,
+        precio_hora_labor_cerrajero: null,
+        precio_hora_labor_profesor: null,
+        precio_hora_labor_paseador: null
     });
 
     /*Función para mostrar notificación cuando no se pudo crear el usuario en la base de datos*/
@@ -435,7 +435,7 @@ const LoginView = ({ setToken }) => {
                             </Col>
                             <Col span={12} className="m-3">
                                 <Form.Item name="contraseña_cliente" label="Contraseña" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
-                                    <Input type="password" pattern="^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$" title="La contraseña debe tener al entre 8 y 16 caracteres, al menos un dígito, al menos una minúscula, al menos una mayúscula y al menos un caracter no alfanumérico." onChange={handleInputChangeRegisterClient} name="contraseña_cliente" />
+                                    <Input.Password type="password" pattern="^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$" title="La contraseña debe tener al entre 8 y 16 caracteres, al menos un dígito, al menos una minúscula, al menos una mayúscula y al menos un caracter no alfanumérico." onChange={handleInputChangeRegisterClient} name="contraseña_cliente" />
                                 </Form.Item>
                                 <Form.Item name="numero_celular_cliente" label="Número de celular" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
                                     <Input type="text" pattern="([0-9]{10})" title="Ingresa un número de celular válido" onChange={handleInputChangeRegisterClient} name="numero_celular_cliente" />
@@ -517,7 +517,7 @@ const LoginView = ({ setToken }) => {
                             </Col>
                             <Col span={12} className="m-3">
                                 <Form.Item name="contraseña_trabajador" label="Contraseña" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
-                                    <Input type="password" pattern="^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$" title="La contraseña debe tener al entre 8 y 16 caracteres, al menos un dígito, al menos una minúscula, al menos una mayúscula y al menos un caracter no alfanumérico." onChange={handleInputChangeRegisterEmployee} name="contraseña_trabajador" />
+                                    <Input.Password type="password" pattern="^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$" title="La contraseña debe tener al entre 8 y 16 caracteres, al menos un dígito, al menos una minúscula, al menos una mayúscula y al menos un caracter no alfanumérico." onChange={handleInputChangeRegisterEmployee} name="contraseña_trabajador" />
                                 </Form.Item>
                                 <Form.Item name="numero_celular_trabajador" label="Número de celular" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
                                     <Input type="text" pattern="([0-9]{10})" title="Ingresa un número de celular válido" onChange={handleInputChangeRegisterEmployee} name="numero_celular_trabajador" />
