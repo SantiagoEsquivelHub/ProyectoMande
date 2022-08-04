@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Rate } from 'antd';
-import { ExclamationCircleOutlined } from '@ant-design/icons';
-import { Modal, notification } from 'antd';
+import { Modal, notification, Form, Button, Input, Rate } from 'antd';
 import { headers } from '../../../containers/headers/headers';
 import OpenEmployee from '../../../containers/openEmployee';
 import { useGetEmployees } from '../../../hooks/useGetEmployees'
@@ -14,8 +12,14 @@ const { confirm } = Modal;
 const CardEmployee = ({ nombre, telefono, estado, url, id, calificacion, precio_hora, distancia, labor }) => {
 
     /*Estados generales*/
+    const [isModalVisible, setIsModalVisible] = useState(false);
     const [workerInfo, setWorkerInfo] = useState(false);
     const [visibleWatchWorker, setVisibleWatchWorker] = useState(false);
+    const [loadingDescrip, setLoadingDescrip] = useState(false);
+    const [description, setDescription] = useState({
+        descripcion: ''
+    })
+    const [formDescrip] = Form.useForm();
     let id_cliente = localStorage.getItem('id');
     let direccion_cliente = localStorage.getItem('direccion');
 
@@ -43,58 +47,6 @@ const CardEmployee = ({ nombre, telefono, estado, url, id, calificacion, precio_
         setVisibleWatchWorker(false);
     };
 
-    /*Función para contratar un trabajador*/
-    const showConfirm = (e, nombre, precio, labor) => {
-
-        let idTrabajador = e.target.id;
-        let id_labor;
-
-        if (labor == 'Plomero') {
-            id_labor = '1';
-        } else if (labor == 'Profesor de inglés') {
-            id_labor = '2';
-        } else if (labor == 'Cerrajero') {
-            id_labor = '3';
-        } else if (labor == 'Paseador de perros') {
-            id_labor = '4';
-        }
-
-        confirm({
-            title: `¿Quieres contratar a ${nombre}?`,
-            icon: <ExclamationCircleOutlined />,
-            content: `Por $${precio} la hora, por la labor de ${labor}`,
-            async onOk() {
-
-                const requestOptions = {
-                    method: 'POST',
-                    headers: headers,
-                    body: JSON.stringify({
-                        id_cliente: id_cliente,
-                        id_trabajador: idTrabajador,
-                        id_labor: id_labor,
-                    })
-                }
-
-
-                const resp = await fetch(`http://${document.domain}:4001/api/hiring/create/`, requestOptions)
-
-                if (resp.status == 200) {
-                    openNotificationWithIconSuccess('success');
-                    setTimeout(() => {
-                        window.location.reload()
-                    }, 2000);
-
-                } else {
-                    openNotificationWithIcon('warning')
-                }
-
-            },
-            onCancel() {
-
-            },
-        });
-    };
-
     /*Función para mostrar notificación cuando no se logre crear la contratacion por algun motivo*/
     const openNotificationWithIcon = (type) => {
         notification[type]({
@@ -112,6 +64,74 @@ const CardEmployee = ({ nombre, telefono, estado, url, id, calificacion, precio_
                 'El trabajador ha sido informado correctamente :)',
         });
     };
+
+    const showModal = () => {
+
+        setIsModalVisible(true);
+
+    };
+
+
+    const handleCancel = () => {
+        setIsModalVisible(false);
+    };
+
+    /*Función para actualizar la descripcion cada vez que hace cambios en los inputs de su formulario*/
+    const handleInputChangeDescrip = (e) => {
+
+        setDescription({
+            [e.target.name]: e.target.value
+        })
+
+    }
+
+    const handleSubmitDescrip = async (idTrabajador, nombre, precio_hora, labor) => {
+
+        let id_labor;
+
+        if (labor == 'Plomero') {
+            id_labor = '1';
+        } else if (labor == 'Profesor de inglés') {
+            id_labor = '2';
+        } else if (labor == 'Cerrajero') {
+            id_labor = '3';
+        } else if (labor == 'Paseador de perros') {
+            id_labor = '4';
+        }
+
+        const requestOptions = {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify({
+                id_cliente: id_cliente,
+                id_trabajador: idTrabajador,
+                id_labor: id_labor,
+                descripcion: description.descripcion
+            })
+        }
+
+        console.log(JSON.stringify({
+            id_cliente: id_cliente,
+            id_trabajador: idTrabajador,
+            id_labor: id_labor,
+            descripcion: description.descripcion
+        }))
+
+        const resp = await fetch(`http://${document.domain}:4001/api/hiring/create/`, requestOptions)
+
+        if (resp.status == 200) {
+            setLoadingDescrip(true)
+            openNotificationWithIconSuccess('success');
+            setTimeout(() => {
+                window.location.reload()
+            }, 2000);
+
+        } else {
+            openNotificationWithIcon('warning')
+        }
+
+
+    }
 
     return (
 
@@ -146,13 +166,31 @@ const CardEmployee = ({ nombre, telefono, estado, url, id, calificacion, precio_
                     <div className={estado == 'Disponible' ? 'activo ' : 'deshabilitado'}>{estado == 'Disponible' ? estado : 'Ocupado'}</div>
                 </div>
                 <div className="ant-list-item-meta-content">
-                    <div id={id} onClick={(e) => showConfirm(e, nombre, precio_hora, labor)} className={estado == 'Disponible' ? 'contratar' : 'ocupado'}>{estado == 'Disponible' ? 'Contratar' : 'Ocupado'}</div>
+                    <div id={id} onClick={showModal} className={estado == 'Disponible' ? 'contratar' : 'ocupado'}>{estado == 'Disponible' ? 'Contratar' : 'Ocupado'}</div>
                 </div>
             </div>
 
             </li>
 
+            <Modal title="Contratar a trabajador" visible={isModalVisible} onCancel={handleCancel} footer={[]}>
+                <p>{`¿Quieres contratar a ${nombre}?`}</p>
+                <p>{`Por $${precio_hora} la hora, por la labor de ${labor}`}</p>
+                <Form form={formDescrip} name="descripTrabajo" className="descripTrabajo" id="descripTrabajo" onFinish={(e) => handleSubmitDescrip(`${id}`, nombre, precio_hora, labor)}>
+                    <Form.Item name="descripcion" label="Descripción del trabajado a realizar" className="d-flex flex-column mb-4">
+                        <Input type="text" onChange={handleInputChangeDescrip} name="descripcion" />
+                    </Form.Item>
 
+                    <div className='d-flex justify-content-center mt-5'>
+                        <Form.Item >
+                            <Button type="primary" htmlType="submit" loading={loadingDescrip} className="btnDescripTrabajo">
+                                Contratar
+                            </Button>
+                        </Form.Item>
+                    </div>
+                </Form>
+
+
+            </Modal>
 
 
             {

@@ -72,7 +72,7 @@ const CardHiredEmployee = ({ nombre, precio, labor, estado_contratacion, foto, i
         setHoursWorked({
             [e.target.name]: e.target.value
         })
-        console.log(hoursWorked)
+        
     }
 
     /*Función para cerrar modal que permite terminar trabajo*/
