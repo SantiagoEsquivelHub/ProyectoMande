@@ -112,16 +112,19 @@ CREATE TABLE contratacion(
     calificacion_contratacion INT NULL, 
     pago INT NULL,
     horas_laboradas INT NULL,
-    fecha_contratacion DATE NULL,
+    fecha_pago DATE NULL,
     id_cliente INT NULL,
     id_trabajador INT NULL,
     id_labor_trabajador INT NULL,
     id_estado_contratacion INT NULL,
+    id_tarjeta_de_pago INT NULL,
     PRIMARY KEY (id_contratacion),
     FOREIGN KEY (id_cliente) REFERENCES cliente(id_cliente),
     FOREIGN KEY (id_trabajador) REFERENCES trabajador(id_trabajador),
     FOREIGN KEY (id_labor_trabajador) REFERENCES labor_trabajador(id_labor_trabajador),
-    FOREIGN KEY (id_estado_contratacion) REFERENCES estado_contratacion(id_estado_contratacion)
+    FOREIGN KEY (id_estado_contratacion) REFERENCES estado_contratacion(id_estado_contratacion),
+    FOREIGN KEY (id_tarjeta_de_pago) REFERENCES tarjeta_cliente(id_tarjeta_cliente),
+
 );
 /* FIN CONTRATACIÓN */
 
