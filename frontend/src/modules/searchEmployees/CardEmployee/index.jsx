@@ -12,7 +12,7 @@ const { confirm } = Modal;
 const CardEmployee = ({ nombre, telefono, estado, url, id, calificacion, precio_hora, distancia, labor }) => {
 
     /*Estados generales*/
-    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isModalVisibleDescrip, setIsModalVisibleDescrip] = useState(false);
     const [workerInfo, setWorkerInfo] = useState(false);
     const [visibleWatchWorker, setVisibleWatchWorker] = useState(false);
     const [loadingDescrip, setLoadingDescrip] = useState(false);
@@ -65,15 +65,14 @@ const CardEmployee = ({ nombre, telefono, estado, url, id, calificacion, precio_
         });
     };
 
-    const showModal = () => {
-
-        setIsModalVisible(true);
-
+    /*Función que abre un modal para escribir descripcion a la contratacion*/
+    const showModalDescrip = () => {
+        setIsModalVisibleDescrip(true);
     };
 
-
-    const handleCancel = () => {
-        setIsModalVisible(false);
+    /*Función que cierra un modal para escribir descripcion a la contratacion*/
+    const handleCancelDescrip  = () => {
+        setIsModalVisibleDescrip(false);
     };
 
     /*Función para actualizar la descripcion cada vez que hace cambios en los inputs de su formulario*/
@@ -166,13 +165,13 @@ const CardEmployee = ({ nombre, telefono, estado, url, id, calificacion, precio_
                     <div className={estado == 'Disponible' ? 'activo ' : 'deshabilitado'}>{estado == 'Disponible' ? estado : 'Ocupado'}</div>
                 </div>
                 <div className="ant-list-item-meta-content">
-                    <div id={id} onClick={showModal} className={estado == 'Disponible' ? 'contratar' : 'ocupado'}>{estado == 'Disponible' ? 'Contratar' : 'Ocupado'}</div>
+                    <div id={id} onClick={showModalDescrip} className={estado == 'Disponible' ? 'contratar' : 'ocupado'}>{estado == 'Disponible' ? 'Contratar' : 'Ocupado'}</div>
                 </div>
             </div>
 
             </li>
 
-            <Modal title="Contratar a trabajador" visible={isModalVisible} onCancel={handleCancel} footer={[]}>
+            <Modal title="Contratar a trabajador" visible={isModalVisibleDescrip} onCancel={handleCancelDescrip } footer={[]}>
                 <p>{`¿Quieres contratar a ${nombre}?`}</p>
                 <p>{`Por $${precio_hora} la hora, por la labor de ${labor}`}</p>
                 <Form form={formDescrip} name="descripTrabajo" className="descripTrabajo" id="descripTrabajo" onFinish={(e) => handleSubmitDescrip(`${id}`, nombre, precio_hora, labor)}>

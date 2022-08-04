@@ -6,7 +6,8 @@ import {
     Modal,
     Col,
     Row,
-    Input
+    Input,
+    notification
 } from 'antd';
 import OpenEmployee from '../../../containers/openEmployee';
 import { useGetEmployees } from '../../../hooks/useGetEmployees'
@@ -16,12 +17,15 @@ import iconUser from '../../../assets/images/User.png';
 const CardHiredEmployee = ({ nombre, precio, labor, estado_contratacion, foto, id, id_contratacion }) => {
 
     /*Estados generales*/
+    const [loadingFinishedJob, setLoadingFinishedJob] = useState(false);
     const [workerInfo, setWorkerInfo] = useState(false);
     const [visibleWatchWorker, setVisibleWatchWorker] = useState(false);
     const [visibleFinishedJob, setVisibleFinishedJob] = useState(false);
     const [cardsClient, setCardsClient] = useState(false);
     const [hoursWorked, setHoursWorked] = useState({
-        horas_laboradas: ''
+        horas_laboradas: '',
+        pago: '',
+        id_contratacion: ''
     })
     const [formJob] = Form.useForm();
     let id_cliente = localStorage.getItem('id');
@@ -43,7 +47,6 @@ const CardHiredEmployee = ({ nombre, precio, labor, estado_contratacion, foto, i
     const getEmployees = async (idWorker) => {
 
         const data = await useGetEmployees(idWorker);
-        console.log(data)
         setWorkerInfo(data);
     }
 
@@ -70,9 +73,10 @@ const CardHiredEmployee = ({ nombre, precio, labor, estado_contratacion, foto, i
     const handleInputChangeFinishedJob = (e) => {
 
         setHoursWorked({
+            pago: e.target.value * precio,
             [e.target.name]: e.target.value
         })
-        
+
     }
 
     /*Función para cerrar modal que permite terminar trabajo*/
@@ -86,9 +90,48 @@ const CardHiredEmployee = ({ nombre, precio, labor, estado_contratacion, foto, i
     }
 
     /*Función que permite terminar trabajo*/
-    const handleSubmitFinishedJob = () => {
+    const handleSubmitFinishedJob = async (id_contratacion) => {
 
+        const requestOptions = {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify({
+                ...hoursWorked,
+                id_contratacion: id_contratacion
+            })
+        }
+
+        const resp = await fetch(`http://${document.domain}:4001/api/worker/`, requestOptions);
+
+        if (resp.status == 200) {
+            setLoadingFinishedJob(true);
+            openNotificationWithIconSuccess('success');
+            setTimeout(() => {
+                window.location.reload()
+            }, 2000);
+
+        } else {
+            openNotificationWithIcon('warning')
+        }
     }
+
+    /*Función para mostrar notificación cuando no se logre terminar la contratacion por algun motivo*/
+    const openNotificationWithIcon = (type) => {
+        notification[type]({
+            message: '¡Terminación de trabajo sin exito!',
+            description:
+                'No se pudo terminar el trabajo. Inténtalo de nuevo :)',
+        });
+    };
+
+    /*Función que muestra una notificación cuando se ha logrado terminar la contratacion*/
+    const openNotificationWithIconSuccess = (type) => {
+        notification[type]({
+            message: '¡Terminación de trabajo registrado correctamente!',
+            description:
+                'El trabajo ha sido terminado correctamente :)',
+        });
+    };
 
     /*Funciones que se van a ejecutar apenas se renderice la página*/
     useEffect(() => {
@@ -113,7 +156,7 @@ const CardHiredEmployee = ({ nombre, precio, labor, estado_contratacion, foto, i
                         <Button type="primary" className={rol == 'cliente' && estado_contratacion != 'Pendiente de pago' ? 'ocultar' : 'mb-3'}>Pagar</Button>
 
                 }
-                <Button type="primary" className={rol == 'trabajador' && estado_contratacion == 'Trabajando' ? 'mb-3' : 'ocultar'} precio={precio} id_contratacion={id_contratacion} onClick={showModalFinishedJob}>Terminar</Button>
+                <Button type="primary" className={rol == 'trabajador' && estado_contratacion == 'Trabajando' ? 'mb-3' : 'ocultar'} onClick={showModalFinishedJob}>Terminar</Button>
             </div>
 
 
@@ -150,17 +193,16 @@ const CardHiredEmployee = ({ nombre, precio, labor, estado_contratacion, foto, i
                 visible={visibleFinishedJob}
                 title="Terminar trabajo"
                 onCancel={handleCancelFinishedJob}
-                width="800px"
                 footer={[
 
                 ]}
             >
-                <Form form={formJob} name="terminarTrabajo" className="terminarTrabajo" id="terminarTrabajo" onFinish={handleSubmitFinishedJob}>
-                    <Row className='col-12 d-flex flex-column align-items-center'>
+                <Form form={formJob} name="terminarTrabajo" className="terminarTrabajo" id="terminarTrabajo" onFinish={() => handleSubmitFinishedJob(id_contratacion)}>
+                    <Row className='col-12 d-flex flex-column'>
                         <div className='d-flex justify-content-center'>
                             <Col span={12} className="m-3">
                                 <Form.Item name="horas_laboradas" label="Horas laboradas" rules={[{ required: true, message: "Este campo es obligatorio" }]} className="d-flex flex-column">
-                                    <Input type="number" pattern="([1-9]{1,3})" title="Ingresa un número de horas válido" onChange={handleInputChangeFinishedJob} name="horas_laboradas" />
+                                    <Input type="number" min="1" max="100" onChange={handleInputChangeFinishedJob} name="horas_laboradas" />
                                 </Form.Item>
 
 
@@ -173,6 +215,14 @@ const CardHiredEmployee = ({ nombre, precio, labor, estado_contratacion, foto, i
                             }
                         </div>
                     </Row>
+
+                    <div className='d-flex justify-content-center mt-1'>
+                        <Form.Item >
+                            <Button type="primary" htmlType="submit" loading={loadingFinishedJob} className="btnFinishedJob">
+                                Finalizar
+                            </Button>
+                        </Form.Item>
+                    </div>
                 </Form>
             </Modal>
         </>
