@@ -11,7 +11,8 @@ import {
     Row,
     Select,
     Timeline,
-    notification
+    notification,
+    Rate
 } from 'antd';
 
 /*Componente usado para mostrar toda la informacion relacionada con las contrataciones de un cliente*/
@@ -192,6 +193,8 @@ const MyEmployeesView = () => {
                                 estado_contratacion={emp.nombre_estado_contratacion}
                                 foto={emp.url_foto_perfil}
                                 id={emp.id_trabajador}
+                                id_contratacion={emp.id_contratacion}
+
                             />
 
                         })
@@ -216,6 +219,7 @@ const MyEmployeesView = () => {
                                         <p>{element.nombre_labor}</p>
                                         <p>{element.fecha_contratacion}</p>
                                         <p className='precio'>${element.pago}</p>
+                                        <Rate style={{color: '#44d2ff'}} disabled defaultValue={element.calificacion_contratacion} />
                                     </Timeline.Item>
 
 
