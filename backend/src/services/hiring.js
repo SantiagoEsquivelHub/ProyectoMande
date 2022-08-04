@@ -1,5 +1,4 @@
 const pool = require("../database/db_pool_connect");
-const { get } = require("../routes/hiring");
 
 const hireWorker = async (data) => {
     const { id_cliente, id_trabajador, id_labor, id_estado_contratacion = 1, calificacion_contratacion = null } = data;
@@ -14,6 +13,54 @@ const hireWorker = async (data) => {
      WHERE id_trabajador = ${id_trabajador};`);
 
     if (createHiring != '') {
+        return true;
+    } else {
+        return false;
+    }
+
+};
+
+const finishHireWorker = async (data) => {
+    const { id_contratacion, horas_laboradas, pago} = data;
+
+    const searchIdWorker = await pool.query(`select id_trabajador from contratacion as c
+    where c.id_contratacion = ${id_contratacion};`)
+
+    let id_del_trabajador = searchIdWorker.rows[0].id_trabajador;
+
+    const actualizarContratacion = await pool.query(`UPDATE contratacion 
+    SET id_estado = 3 , horas_laboradas = ${horas_laboradas} , pago = ${pago}
+    WHERE id_contratacion = ${id_contratacion};`);
+
+    const actualizarEstadoTrabajador = await pool.query(`UPDATE trabajador
+     SET id_estado = 1
+     WHERE id_trabajador = ${id_del_trabajador};`);
+
+    if (searchIdWorker != '') {
+        return true;
+    } else {
+        return false;
+    }
+
+};
+
+const payHiring = async (data) => {
+    const { id_contratacion , Calificacion , id_tarjeta_pago } = data;
+
+    const searchIdWorker = await pool.query(`select id_trabajador from contratacion as c
+    where c.id_contratacion = ${id_contratacion};`)
+
+    let id_del_trabajador = searchIdWorker.rows[0].id_trabajador;
+
+    const actualizarContratacion = await pool.query(`UPDATE contratacion 
+    SET id_estado = 3 , horas_laboradas = ${horas_laboradas} , pago = ${pago}
+    WHERE id_contratacion = ${id_contratacion};`);
+
+    const actualizarEstadoTrabajador = await pool.query(`UPDATE trabajador
+     SET id_estado = 1
+     WHERE id_trabajador = ${id_del_trabajador};`);
+
+    if (searchIdWorker != '') {
         return true;
     } else {
         return false;
@@ -103,9 +150,28 @@ const getHiringFinished = async(data) => {
     }
 }
 
+const getInfoToPay = async(data) => {
+    const { id_contratacion } = data;
+
+    
+        let get = await pool.query(`SELECT c.horas_laboradas, c.pago
+        FROM contratacion AS c
+        WHERE c.id_contratacion = ${id_contratacion};`);
+        if (get != '') {
+            return get.rows;
+        } else {
+            return false;
+        }
+
+    
+}
+
 
 module.exports = {
     hireWorker,
     viewHiring,
-    getHiringFinished
+    getHiringFinished,
+    finishHireWorker,
+    getInfoToPay,
+    payHiring
 };

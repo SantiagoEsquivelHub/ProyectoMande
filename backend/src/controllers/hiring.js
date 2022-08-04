@@ -1,5 +1,5 @@
 const { response } = require('express');
-const { hireWorker, viewHiring, getHiringFinished} = require( '../services/hiring')
+const { hireWorker, viewHiring, getHiringFinished, finishHireWorker, getInfoToPay} = require( '../services/hiring')
 
 
 const create = async (req, res = response) => {
@@ -14,12 +14,33 @@ const create = async (req, res = response) => {
     
 };
 
+const update = async (req, res = response) => {
+
+    const insert = await finishHireWorker(req.body);
+    
+    if(insert){
+        res.status(200).send("Contratación actualizada con exito");
+    }else{
+        res.status(400).send("No se pudo actualizar la contratacion");
+    }
+    
+};
+
 const getHirings = async (req, res = response) => {
     const query = await viewHiring(req.body) 
     if(query != ''){
         res.json(query).status(200)
     }else{
         res.status(400).send("No hay ninguna contratación")
+    }
+}
+
+const getInfo = async (req, res = response) => {
+    const query = await getInfoToPay(req.body) 
+    if(query != ''){
+        res.json(query).status(200)
+    }else{
+        res.status(400).send("No hay información")
     }
 }
 
@@ -39,5 +60,7 @@ const getHistorial = async (req, res = response) => {
 module.exports = {
     create,
     getHirings,
-    getHistorial
+    getHistorial,
+    update,
+    getInfo
 }

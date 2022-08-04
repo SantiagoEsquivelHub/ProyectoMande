@@ -48,8 +48,23 @@ const getCardsClient = async(id) =>{
     }
 }
 
+const getInfoOfCardClient = async(id) =>{
+
+    const cardsClient = await pool.query(`SELECT nombre_tipo,  marca_tipo , banco_tipo , numero_tarjeta FROM tipo_tarjeta as tp
+    JOIN  tarjeta AS t ON tp.id_tipo = t.id_tipo
+    JOIN  tarjeta_cliente as tc ON t.id_tarjeta = tc.id_tarjeta
+    WHERE tc.id_cliente = ${id};`);
+
+    if (cardsClient.rows != '') {
+        return cardsClient.rows;
+    } else {
+        return false;
+    }
+}
+
 module.exports = {
     insertCard,
     getCardTypes,
-    getCardsClient
+    getCardsClient,
+    getInfoOfCardClient
 };
