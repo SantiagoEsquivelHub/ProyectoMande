@@ -1,5 +1,5 @@
 const { response } = require('express');
-const { insertCard, getCardTypes, getCardsClient } = require('../services/card')
+const { insertCard, getCardTypes, getCardsClient, getInfoOfCardClient } = require('../services/card')
 
 
 const create = async (req, res = response) => {
@@ -15,11 +15,20 @@ const create = async (req, res = response) => {
 };
 
 const get = async (req , res = response) => {
-    const get = await getCardTypes();
+    const get = await getCardTypes(); //Consultar??
     if(get){
         res.json(get).status(200)
     }else{
         res.status(400).send("No existen tipos de tarjetas")
+    }
+}
+
+const getInfoCard = async (req , res = response) => {
+    const get = await getInfoOfCardClient(req.params);
+    if(get){
+        res.json(get).status(200)
+    }else{
+        res.status(400).send("No existe informacion del cliente")
     }
 }
 
@@ -36,5 +45,6 @@ const cards = async (req , res = response) => {
 module.exports = {
     create,
     get,
-    cards
+    cards,
+    getInfoCard
 }
