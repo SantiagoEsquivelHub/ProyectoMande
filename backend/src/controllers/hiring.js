@@ -1,5 +1,5 @@
 const { response } = require('express');
-const { hireWorker, viewHiring, getHiringFinished, finishHireWorker, getInfoToPay} = require( '../services/hiring')
+const { hireWorker, viewHiring, getHiringFinished, finishHireWorker, getInfoToPay, payHiring} = require( '../services/hiring')
 
 
 const create = async (req, res = response) => {
@@ -22,6 +22,19 @@ const update = async (req, res = response) => {
         res.status(200).send("Contratación actualizada con exito");
     }else{
         res.status(400).send("No se pudo actualizar la contratacion");
+    }
+    
+};
+
+
+const updatePay = async (req, res = response) => {
+
+    const insert = await payHiring(req.body);
+    
+    if(insert){
+        res.status(200).send("Contratación pagada con exito");
+    }else{
+        res.status(400).send("No se pago la contratacion");
     }
     
 };
@@ -63,5 +76,6 @@ module.exports = {
     getHirings,
     getHistorial,
     update,
-    getInfo
+    getInfo,
+    updatePay
 }

@@ -45,22 +45,13 @@ const finishHireWorker = async (data) => {
 };
 
 const payHiring = async (data) => {
-    const { id_contratacion , Calificacion , id_tarjeta_pago } = data;
-
-    const searchIdWorker = await pool.query(`select id_trabajador from contratacion as c
-    where c.id_contratacion = ${id_contratacion};`)
-
-    let id_del_trabajador = searchIdWorker.rows[0].id_trabajador;
+    const { id_contratacion , calificacion_contratacion , id_tarjeta_pago } = data;
 
     const actualizarContratacion = await pool.query(`UPDATE contratacion 
-    SET id_estado = 3 , horas_laboradas = ${horas_laboradas} , pago = ${pago}
+    SET id_estado = 2 , calificacion_contratacion = ${calificacion_contratacion} , id_tarjeta_pago = ${id_tarjeta_pago}
     WHERE id_contratacion = ${id_contratacion};`);
 
-    const actualizarEstadoTrabajador = await pool.query(`UPDATE trabajador
-     SET id_estado = 1
-     WHERE id_trabajador = ${id_del_trabajador};`);
-
-    if (searchIdWorker != '') {
+    if (actualizarContratacion != '') {
         return true;
     } else {
         return false;
