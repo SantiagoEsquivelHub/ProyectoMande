@@ -29,7 +29,7 @@ const finishHireWorker = async (data) => {
     let id_del_trabajador = searchIdWorker.rows[0].id_trabajador;
 
     const actualizarContratacion = await pool.query(`UPDATE contratacion 
-    SET id_estado = 3 , horas_laboradas = ${horas_laboradas} , pago = ${pago}
+    SET id_estado_contratacion = 3 , horas_laboradas = ${horas_laboradas} , pago = ${pago}
     WHERE id_contratacion = ${id_contratacion};`);
 
     const actualizarEstadoTrabajador = await pool.query(`UPDATE trabajador
@@ -45,10 +45,10 @@ const finishHireWorker = async (data) => {
 };
 
 const payHiring = async (data) => {
-    const { id_contratacion , calificacion_contratacion , id_tarjeta_pago } = data;
+    const { id_contratacion , calificacion_contratacion , id_tarjeta_de_pago } = data;
 
     const actualizarContratacion = await pool.query(`UPDATE contratacion 
-    SET id_estado = 2 , calificacion_contratacion = ${calificacion_contratacion} , id_tarjeta_pago = ${id_tarjeta_pago}
+    SET id_estado_contratacion = 2 , calificacion_contratacion = ${calificacion_contratacion} , id_tarjeta_de_pago = ${id_tarjeta_de_pago}, fecha_pago = current_date
     WHERE id_contratacion = ${id_contratacion};`);
 
     if (actualizarContratacion != '') {
@@ -113,7 +113,7 @@ const getHiringFinished = async (data) => {
         JOIN trabajador AS t ON c.id_trabajador = t.id_trabajador
         JOIN cliente AS cl ON c.id_cliente = cl.id_cliente
         WHERE cl.id_cliente = ${id} AND c.id_estado_contratacion = 2
-        ORDER BY c.id_estado_contratacion ASC;`);
+        ORDER BY c.fecha_pago DESC;`);
         if (get != '') {
             return get.rows;
         } else {
@@ -129,7 +129,7 @@ const getHiringFinished = async (data) => {
         JOIN trabajador AS t ON c.id_trabajador = t.id_trabajador
         JOIN cliente AS cl ON c.id_cliente = cl.id_cliente
         WHERE t.id_trabajador = ${id} AND c.id_estado_contratacion = 2
-        ORDER BY c.id_estado_contratacion ASC;`);
+        ORDER BY c.fecha_pago DESC;`);
         if (get != '') {
             return get.rows;
         } else {

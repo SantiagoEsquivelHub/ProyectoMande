@@ -7,7 +7,7 @@ router.post('/create' , verifyToken , create );
 router.post('/update' , verifyToken , update );
 router.post('/updatePay' , verifyToken , updatePay );
 router.post('/get' , verifyToken , getHirings );
-router.post('/getInfo' , verifyToken , getInfo );
+router.post('/getInfo', getInfo );
 router.post('/historial' , getHistorial);
 
 

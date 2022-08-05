@@ -124,7 +124,7 @@ CREATE TABLE contratacion(
     FOREIGN KEY (id_trabajador) REFERENCES trabajador(id_trabajador),
     FOREIGN KEY (id_labor_trabajador) REFERENCES labor_trabajador(id_labor_trabajador),
     FOREIGN KEY (id_estado_contratacion) REFERENCES estado_contratacion(id_estado_contratacion),
-    FOREIGN KEY (id_tarjeta_de_pago) REFERENCES tarjeta_cliente(id_tarjeta_cliente),
+    FOREIGN KEY (id_tarjeta_de_pago) REFERENCES tarjeta(id_tarjeta),
 
 );
 /* FIN CONTRATACIÓN */
