@@ -63,10 +63,9 @@ const CardHiredEmployee = ({ nombre, precio, labor, estado_contratacion, foto, i
             headers: headers
         }
 
-        const resp = await fetch(`http://${document.domain}:4001/api/card/getCardsClient/` + id_cliente, requestOptions);
+        const resp = await fetch(`http://${document.domain}:4001/api/card/getInfoCardsClient/` + id_cliente, requestOptions);
         const data = await resp.json();
         setCardsClient(data)
-
     }
 
     /*Función para actualizar los datos del trabajador cada vez que hace cambios en los inputs de su formulario*/
@@ -101,7 +100,7 @@ const CardHiredEmployee = ({ nombre, precio, labor, estado_contratacion, foto, i
             })
         }
 
-        const resp = await fetch(`http://${document.domain}:4001/api/worker/`, requestOptions);
+        const resp = await fetch(`http://${document.domain}:4001/api/hiring/update`, requestOptions);
 
         if (resp.status == 200) {
             setLoadingFinishedJob(true);
@@ -153,7 +152,7 @@ const CardHiredEmployee = ({ nombre, precio, labor, estado_contratacion, foto, i
 
                 {
                     !cardsClient ? '' :
-                        <Button type="primary" className={rol == 'cliente' && estado_contratacion != 'Pendiente de pago' ? 'ocultar' : 'mb-3'}>Pagar</Button>
+                        <Button type="primary" className={rol == 'cliente' && estado_contratacion != 'Pendiente de pago' ? 'ocultar' : 'mb-3'} id_contratacion={id_contratacion}>Pagar</Button>
 
                 }
                 <Button type="primary" className={rol == 'trabajador' && estado_contratacion == 'Trabajando' ? 'mb-3' : 'ocultar'} onClick={showModalFinishedJob}>Terminar</Button>

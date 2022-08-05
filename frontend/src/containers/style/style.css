@@ -59,3 +59,13 @@
   overflow: auto;
   height: 85vh;
 }
+
+.contrataciones {
+  grid-template-columns: 0.1fr 0.1fr 0.1fr 0.1fr;
+  overflow: auto;
+  height: 35vh;
+}
+
+.centrar {
+  margin: 0 auto !important;
+}

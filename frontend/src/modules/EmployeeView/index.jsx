@@ -36,16 +36,9 @@ const EmployeeView = () => {
         }
 
         const resp = await fetch(`http://${document.domain}:4001/api/hiring/get/`, requestOptions);
+        const data = await resp.json();
+        setClient(data);
 
-
-        if (resp.status == 200) {
-
-            const data = await resp.json();
-            setClient(data);
-            console.log(data)
-        } else {
-
-        }
 
     }
 
@@ -90,9 +83,9 @@ const EmployeeView = () => {
             <h1>Mi perfil</h1>
             <h5 className='mb-2'>Clientes</h5>
 
-            <div className='d-flex'>
+            <div className='d-flex mb-5 justify-content-center'>
                 {
-                    client.length == 0 || !client ? 'Sin contrataciones...' :
+                    !client ? 'Sin contrataciones...' :
                         client.map(client => {
                             return <CardHiredEmployee
                                 key={client.id_cliente}
@@ -108,29 +101,31 @@ const EmployeeView = () => {
 
                 }
             </div>
-            <div className='timeline_interna col-6'>
+            <div className='timeline_interna col-6 centrar'>
                 <Card className='m-3' >
                     <Card.Body>
-                        <div className='d-flex align-items-center justify-content-between mb-2'>
+                        <div className='d-flex align-items-center justify-content-center mb-2'>
                             <Card.Title className=''>Historial</Card.Title>
                         </div>
                         <div>
+                            <Timeline mode="alternate">
+                                {!historial || historial.length == 0 ? <Timeline.Item color='#05F3C8'></Timeline.Item> :
 
-                            {!historial || historial.length == 0 ? 'Sin información' :
+                                    historial.map(element => {
 
-                                historial.map(element => {
+                                        return <Timeline.Item color='#05F3C8'>
+                                            <p className='yellow'>{element.nombre_cliente}</p>
+                                            <p>{element.nombre_labor}</p>
+                                            <p>{element.fecha_contratacion}</p>
+                                            <p className='precio'>${element.pago}</p>
+                                            <Rate style={{ color: '#44d2ff' }} disabled defaultValue={element.calificacion_contratacion} />
+                                        </Timeline.Item>
 
-                                    return <Timeline.Item color='#05F3C8'>
-                                        <p className='yellow'>{element.nombre_cliente}</p>
-                                        <p>{element.nombre_labor}</p>
-                                        <p>{element.fecha_contratacion}</p>
-                                        <p className='precio'>${element.pago}</p>
-                                        <Rate style={{color: '#44d2ff'}} disabled defaultValue={element.calificacion_contratacion} />
-                                    </Timeline.Item>
+                                    })
 
-                                })
+                                }
+                            </Timeline>
 
-                            }
                         </div>
                     </Card.Body>
                 </Card>
