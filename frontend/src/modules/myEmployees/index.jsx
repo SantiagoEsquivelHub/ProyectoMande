@@ -183,7 +183,7 @@ const MyEmployeesView = () => {
             </div>
             <div className='d-flex mb-5 justify-content-center'>
                 {
-                    employees.length == 0 || !employees ? 'Sin contrataciones...' :
+                    !employees ? 'Sin contrataciones...' :
                         employees.map(emp => {
                             return <CardHiredEmployee
                                 key={emp.id_trabajador}
@@ -209,7 +209,7 @@ const MyEmployeesView = () => {
                             <Card.Title className=''>Historial</Card.Title>
                         </div>
                         <div>
-                            <Timeline mode="alternate"> 
+                            <Timeline mode="alternate">
                                 {!historial || historial.length == 0 ? <Timeline.Item color='#05F3C8'></Timeline.Item> :
 
                                     historial.map(element => {
@@ -225,7 +225,7 @@ const MyEmployeesView = () => {
 
                                     })
                                 }
-                           </Timeline>
+                            </Timeline>
 
                         </div>
                     </Card.Body>

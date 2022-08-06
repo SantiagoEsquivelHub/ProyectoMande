@@ -4,15 +4,7 @@ import { headers } from '../../containers/headers/headers';
 import CardHiredEmployee from '../MyEmployees/CardHiredEmployee';
 import Card from 'react-bootstrap/Card';
 import {
-    Modal,
-    Form,
-    Input,
-    Button,
-    Col,
-    Row,
-    Select,
     Timeline,
-    notification,
     Rate
 } from 'antd';
 

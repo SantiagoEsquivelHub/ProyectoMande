@@ -56,7 +56,7 @@ const SearchEmployeesView = () => {
   useEffect(() => {
     
     getLabors();
-
+    handleChangeLabor(1);
   }, [])
 
 
@@ -71,6 +71,7 @@ const SearchEmployeesView = () => {
           style={{
             width: 200,
           }}
+          defaultValue={1}
           onChange={handleChangeLabor}
         >
 

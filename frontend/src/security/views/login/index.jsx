@@ -121,7 +121,7 @@ const LoginView = ({ setToken }) => {
                     clave: ""
                 })
                 localStorage.setItem('usuario', res.data.nombre)
-                localStorage.setItem('img', res.data.url_img_usuario)
+                localStorage.setItem('img', res.data.url_foto_perfil)
                 localStorage.setItem('rol', res.data.rol)
                 localStorage.setItem('id', res.data.id)
                 localStorage.setItem('direccion', res.data.direccion)
@@ -198,7 +198,7 @@ const LoginView = ({ setToken }) => {
 
         const resp = await fetch(`http://${document.domain}:4001/api/client/create`, requestOptions)
 
-        if (respEmp.status == 200) {
+        if (resp.status == 200) {
             openNotificationWithIconSuccess('success');
             setLoadingClient(true);
 
