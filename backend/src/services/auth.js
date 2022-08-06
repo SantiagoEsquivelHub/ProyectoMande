@@ -3,10 +3,10 @@ const bcrypt = require('bcryptjs');
 
 const validateUser = async (email, clave) => {
     const password = await clave;
-    const cliente = await pool.query(`SELECT contraseña_cliente, email_cliente as email, nombre_cliente as nombre, id_cliente as id, direccion_residencia_cliente as direccion  FROM cliente WHERE email_cliente = '${email}';`);
+    const cliente = await pool.query(`SELECT contraseña_cliente, email_cliente as email, nombre_cliente as nombre, id_cliente as id, direccion_residencia_cliente as direccion   FROM cliente WHERE email_cliente = '${email}';`);
 
     if (cliente.rows == '') {
-        const trabajador = await pool.query(`SELECT contraseña_trabajador, nombre_trabajador as nombre,  email_trabajador as email, id_trabajador as id, direccion_residencia_trabajador as direccion  FROM trabajador WHERE email_trabajador = '${email}';`);
+        const trabajador = await pool.query(`SELECT contraseña_trabajador, nombre_trabajador as nombre,  email_trabajador as email, id_trabajador as id, direccion_residencia_trabajador as direccion, url_foto_perfil  FROM trabajador WHERE email_trabajador = '${email}';`);
         if (trabajador.rows != '') {
             const passHashTrabajador = await bcrypt.compare(password, trabajador.rows[0].contraseña_trabajador);
 

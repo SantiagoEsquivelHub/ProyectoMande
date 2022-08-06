@@ -48,7 +48,7 @@ const payHiring = async (data) => {
     const { id_contratacion , calificacion_contratacion , id_tarjeta_de_pago } = data;
 
     const actualizarContratacion = await pool.query(`UPDATE contratacion 
-    SET id_estado_contratacion = 2 , calificacion_contratacion = ${calificacion_contratacion} , id_tarjeta_de_pago = ${id_tarjeta_de_pago}, fecha_pago = current_date
+    SET id_estado_contratacion = 2 , calificacion_contratacion = ${calificacion_contratacion} , id_tarjeta_de_pago = ${id_tarjeta_de_pago}, fecha_pago = current_timestamp
     WHERE id_contratacion = ${id_contratacion};`);
 
     if (actualizarContratacion != '') {
@@ -105,7 +105,7 @@ const getHiringFinished = async (data) => {
     const { id, tipo } = data;
 
     if (tipo == "id_cliente") {
-        let get = await pool.query(`SELECT t.nombre_trabajador, l.nombre_labor , c.pago, to_char(c.fecha_pago, 'yy/mm/dd') as fecha_pago, c.calificacion_contratacion
+        let get = await pool.query(`SELECT t.nombre_trabajador, l.nombre_labor , c.pago, to_char(c.fecha_pago, 'yyyy-mm-dd HH12:MI:SS AM') as fecha_pago, c.calificacion_contratacion
         FROM contratacion AS c
         JOIN estado_contratacion AS ec ON c.id_estado_contratacion = ec.id_estado_contratacion
         JOIN labor_trabajador AS lt ON c.id_labor_trabajador = lt.id_labor_trabajador
