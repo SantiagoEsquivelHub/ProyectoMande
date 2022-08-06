@@ -16,7 +16,7 @@ import { useGetEmployees } from '../../../hooks/useGetEmployees'
 import { headers } from '../../../containers/headers/headers';
 import iconUser from '../../../assets/images/User.png';
 
-const CardHiredEmployee = ({ nombre, precio, labor, estado_contratacion, foto, id, id_contratacion }) => {
+const CardHiredEmployee = ({ nombre, precio, labor, estado_contratacion, foto, id, id_contratacion, tipo }) => {
 
     /*Estados generales*/
     const [infoToPay, setInfoToPay] = useState();
@@ -49,16 +49,16 @@ const CardHiredEmployee = ({ nombre, precio, labor, estado_contratacion, foto, i
 
         let idWorker = e.target.id;
 
-        getEmployees(idWorker);
+        getEmployees(idWorker, tipo);
 
         setVisibleWatchWorker(true)
 
     }
 
     /*Función para obtener la data de cada usuario*/
-    const getEmployees = async (idWorker) => {
+    const getEmployees = async (idWorker, tipo) => {
 
-        const data = await useGetEmployees(idWorker);
+        const data = await useGetEmployees(idWorker, tipo);
         setWorkerInfo(data);
     }
 
@@ -226,7 +226,7 @@ const CardHiredEmployee = ({ nombre, precio, labor, estado_contratacion, foto, i
         {
             rol == 'cliente' ? getCardsClient() : ''
         }
-
+     
     }, [])
 
     return (
@@ -263,11 +263,11 @@ const CardHiredEmployee = ({ nombre, precio, labor, estado_contratacion, foto, i
                     >
                         <OpenEmployee
                             nombre={rol == 'cliente' ? workerInfo.nombre_trabajador : workerInfo.nombre_cliente}
-                            correo={rol == 'cliente' ? workerInfo.email_trabajador : workerInfo.nombre_cliente}
-                            celular={rol == 'cliente' ? workerInfo.numero_celular_trabajador : workerInfo.nombre_cliente}
+                            correo={rol == 'cliente' ? workerInfo.email_trabajador : workerInfo.email_cliente}
+                            celular={rol == 'cliente' ? workerInfo.numero_celular_trabajador : workerInfo.numero_celular_cliente}
                             direccion_cliente={direccion_cliente}
-                            direccion_trabajador={workerInfo.direccion_residencia_trabajador}
-                            img={workerInfo.url_foto_perfil}
+                            direccion_trabajador={rol == 'cliente' ? workerInfo.direccion_residencia_trabajador : workerInfo.direccion_residencia_cliente}
+                            img={rol == 'cliente' ? workerInfo.url_foto_perfil : iconUser}
                         />
                     </Modal>
 

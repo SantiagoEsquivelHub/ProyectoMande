@@ -194,7 +194,7 @@ const MyEmployeesView = () => {
                                 foto={emp.url_foto_perfil}
                                 id={emp.id_trabajador}
                                 id_contratacion={emp.id_contratacion}
-
+                                tipo="trabajador"
                             />
 
                         })
