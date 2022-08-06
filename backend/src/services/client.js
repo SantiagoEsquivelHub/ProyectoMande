@@ -35,8 +35,19 @@ const deleteClient = async (data) => {
 
 };
 
+const getInfo = async (id) => {
+    const cliente = await pool.query(`SELECT id_cliente, nombre_cliente, direccion_residencia_cliente, numero_celular_cliente, email_cliente  FROM cliente WHERE id_cliente = ${id};`);
+
+    if (cliente.rows != '') {
+        return cliente.rows;
+    } else {
+        return false;
+    }
+}
+
 
 module.exports = {
     insertClient,
-    deleteClient
+    deleteClient,
+    getInfo
 };

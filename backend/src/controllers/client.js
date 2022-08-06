@@ -1,5 +1,5 @@
 const { response } = require('express');
-const { insertClient , deleteClient } = require( '../services/client')
+const { insertClient , deleteClient, getInfo } = require( '../services/client')
 
 
 const create = async (req, res = response) => {
@@ -26,9 +26,18 @@ const eliminate = async (req, res = response) => {
     
 };
 
-
+const info = async (req , res = response) => {
+    let { id } = req.params;
+    const get = await getInfo(id);
+    if(get){
+        res.json(get).status(200)
+    }else{
+        res.status(400).send("No existe el cliente")
+    }
+}
 
 module.exports = {
     create,
-    eliminate
+    eliminate,
+    info
 }
