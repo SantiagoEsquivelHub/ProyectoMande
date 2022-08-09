@@ -274,7 +274,7 @@ const MyEmployeesView = () => {
                     <div className='d-flex justify-content-center'>
                         <Form.Item >
                             <Button htmlType="button" onClick={onResetPay}>
-                                Reset
+                                Limpiar
                             </Button>
                             <Button type="primary" htmlType="submit" loading={loadingPay} className="btnCrearTarjeta">
                                 Crear

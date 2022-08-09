@@ -226,7 +226,7 @@ const LoginView = ({ setToken }) => {
                 id_estado: '1'
             })
         }
-  
+
         const respEmp = await fetch(`http://${document.domain}:4001/api/worker/create`, requestOptions)
         console.log(respEmp)
 
@@ -447,7 +447,7 @@ const LoginView = ({ setToken }) => {
                     <div className='d-flex justify-content-center'>
                         <Form.Item >
                             <Button htmlType="button" onClick={onResetClient}>
-                                Reset
+                                Limpiar
                             </Button>
                             <Button type="primary" htmlType="submit" loading={loadingClient} className="btnCrearCliente">
                                 Crear
@@ -558,7 +558,7 @@ const LoginView = ({ setToken }) => {
                     <div className='d-flex justify-content-center'>
                         <Form.Item >
                             <Button htmlType="button" onClick={onResetWorker}>
-                                Reset
+                                Limpiar
                             </Button>
                             <Button type="primary" htmlType="submit" loading={loadingWorker} className="btnCrearTrabajador">
                                 Crear
