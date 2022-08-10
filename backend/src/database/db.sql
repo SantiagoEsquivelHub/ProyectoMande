@@ -24,7 +24,7 @@ CREATE TABLE tarjeta(
     fecha_caducidad DATE NULL,
     id_tipo INT NULL, 
     PRIMARY KEY (id_tarjeta),
-    FOREIGN KEY (id_tipo) REFERENCES tipo(id_tipo)
+    FOREIGN KEY (id_tipo) REFERENCES tipo_tarjeta(id_tipo)
 );
 
 /*Creamos la tabla Cliente */

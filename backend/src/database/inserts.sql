@@ -15,10 +15,6 @@ VALUES
 ('Finalizada'),
 ('Pendiente de pago');
 
-INSERT INTO contratacion(calificacion_contratacion, pago, id_cliente, id_trabajador, id_labor_trabajador, id_estado_contratacion)
-VALUES
-(5, 20000, 5, 8, 1, 2)
-
 INSERT INTO tipo_tarjeta(nombre_tipo, marca_tipo, banco_tipo)
 VALUES
 ('Débito', 'Visa', 'Bancolombia'),
@@ -48,7 +44,7 @@ VALUES
 
 INSERT INTO tarjeta(numero_tarjeta, clave_tarjeta, id_tipo, fecha_caducidad)
 VALUES
-('1234567890123456', 12345, 1, '2024-03-01')
+('1234567890123456', 12345, 1, '2024-03-01');
 
 /* FUNCIONES */
 

@@ -63,14 +63,18 @@ const resulstOfSearch = async (data) => {
     let latAndLongAllClient = [];
     let responseData = [];
 
+    let trabajadores_ordenados = [];
 
     /* Consultamos la direccion del cliente */
     const direccionCliente = await pool.query(`SELECT direccion_residencia_cliente FROM cliente WHERE id_cliente = ${id_cliente}`);
 
     /* Consultamos la direccion del trabajador */
-    const direccionesTrabajadores = await pool.query(`SELECT  DISTINCT t.direccion_residencia_trabajador ,  t.id_trabajador FROM trabajador AS t
+    const direccionesTrabajadores = await pool.query(`SELECT  t.direccion_residencia_trabajador ,  t.id_trabajador, AVG(c.calificacion_contratacion)::numeric(10,1)  AS promedio_calificacion FROM trabajador AS t
     JOIN labor_trabajador AS lt ON t.id_trabajador = lt.id_trabajador
-    WHERE lt.id_labor = ${id_labor};`);
+    LEFT JOIN contratacion AS c ON c.id_trabajador = t.id_trabajador
+    WHERE lt.id_labor = ${id_labor} AND lt.precio_hora_labor is not null
+    GROUP BY t.direccion_residencia_trabajador, t.id_trabajador
+    ORDER by t.direccion_residencia_trabajador desc, promedio_calificacion asc`);
 
 
     /* Validamos si existe el clientem, si no existe retorna error*/
@@ -88,8 +92,6 @@ const resulstOfSearch = async (data) => {
             const lon = element.direccion_residencia_cliente.split(',')[1].split(')')[0]
             latAndLongAllClient.push({ "lat": `${lat}`, "lon": `${lon}` });
         });
-
-
 
 
         /* Por cada trabajador se valida si ya tuvo alguna contratación para extraer el promedio de las calificaciones de todas las contrataciones, si no tiene se retorna null el valor */
