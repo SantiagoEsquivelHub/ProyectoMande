@@ -22,8 +22,8 @@ const { Option } = Select;
 const { Search } = Input;
 
 const layout = {
-    labelCol: { span: 20 },
-    wrapperCol: { span: 50 },
+    labelCol: { span: 0 },
+    wrapperCol: { span: 40 },
 };
 
 

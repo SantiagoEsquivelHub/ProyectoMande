@@ -254,7 +254,7 @@ const CardHiredEmployee = ({ nombre, precio, labor, estado_contratacion, foto, i
                             top: 20,
                         }}
                         visible={visibleWatchWorker}
-                        title={rol == 'Trabajador' ? "Ver trabajador" : "Ver cliente"}
+                        title={rol == 'Trabajador' ? "Ver cliente" : "Ver trabajador"}
                         onCancel={handleCancelWorker}
                         width="800px"
                         footer={[

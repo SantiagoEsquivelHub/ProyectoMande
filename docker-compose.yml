@@ -1,0 +1,28 @@
+# Use postgres/example user/password credentials
+version: '3.7'
+services:
+  backend:
+    image: backend
+    volumes:
+          - ./backend:/usr/src/server
+          - /usr/src/server/node_modules
+    ports:
+      - 4001:4001
+    depends_on:
+      - db
+  db:
+    image: postgres:latest
+    restart: always
+    container_name: db_container
+    hostname: myhost
+    environment:
+      POSTGRES_DB: mande
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: pg123
+    volumes:
+      - C:/Users/santi/OneDrive/Escritorio/postgres_volumen:/var/lib/postgresql/data
+      - ./backend/src/database/db.sql:/docker-entrypoint-initdb.d/create_schema.sql
+      - ./backend/src/database/inserts.sql:/docker-entrypoint-initdb.d/data.sql
+    ports:
+      - "5433:5432"
+
