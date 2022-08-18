@@ -26,7 +26,7 @@ const CardEmployee = ({ nombre, telefono, estado, url, id, calificacion, precio_
     /*Función para obtener la data de cada usuario*/
     const getEmployees = async (idWorker) => {
 
-        const data = await useGetEmployees(idWorker);
+        const data = await useGetEmployees(idWorker, 'trabajador');
 
         setWorkerInfo(data);
     }
